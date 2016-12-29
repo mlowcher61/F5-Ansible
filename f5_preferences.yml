@@ -5,7 +5,8 @@
 #      All rights reserved.
 #
 #      author: Mark Lowcher F5 Networks
-#      description: This playbook will change the followin preferences on the F5 loadbalancer.
+#      description: This playbook will change the followin preferences on the 
+#      F5 loadbalancer.
 #      - Change the default of basic to advanced on all pages in the GUI.
 #      - Change records per screen from the default of 10 to the number specified.
 #      - Apply the specified message as the security banner on the gui login page.
