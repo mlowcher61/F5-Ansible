@@ -5,8 +5,11 @@
 #      All rights reserved.
 #
 #      author: Mark Lowcher F5 Networks
-#      description: This playbook will update the geolocation database. The geoiip files must be downloaded from https://downloads.f5.com and placed in the appropriate directories within the Ansible system.
-#      This file calls the hosts "loadbalancer" Make sure that you have defined this in your /etc/ansible/hosts file
+#      description: This playbook will update the geolocation database. 
+#      The geoip files must be downloaded from https://downloads.f5.com and placed 
+#      in the appropriate directories within the Ansible system.
+#      This file calls the hosts "loadbalancer" Make sure that you have defined 
+#      this in your /etc/ansible/hosts file
 #      Example [loadbalancer]
 #               10.0.0.100
 #               10.0.0.101
