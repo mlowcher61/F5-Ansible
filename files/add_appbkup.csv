@@ -1,0 +1,2 @@
+appliance,primary,poolname,member,vipname,vip_ip,protocol
+10.0.0.169,yes,mytest_pool,20.20.20.200:80,mytest_vs,10.10.10.100:80,tcp

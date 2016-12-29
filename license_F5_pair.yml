@@ -1,0 +1,24 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will license two f5 devices. Be sure to change the --basekey to your basekeys!!
+#      Also make sure your loadbalancers are in /etc/ansible/hosts.
+#      Example: 
+#      [loadbalancer]
+#      10.0.0.100
+#      10.0.0.101
+#
+
+  - hosts: loadbalancer[0]
+    tasks:
+      - name: License Big-IP
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey UXESB-BKZNM-TJGJL-LZHTJ-CQXYYPP
+
+  - hosts: loadbalancer[1]
+    tasks:
+      - name: License Big-IP
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey URXPY-SKAEI-NLZDI-BAKDK-ZNORXDG

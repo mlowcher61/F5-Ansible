@@ -1,0 +1,6 @@
+---
+   - hosts: loadbalancer
+
+     tasks:
+       - name: push jq
+         copy: src=/home/lowcher/ansible/playbooks/jq dest=/config/ mode=755      

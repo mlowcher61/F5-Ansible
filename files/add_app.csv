@@ -1,0 +1,4 @@
+appliance,primary,poolname,member,vipname,vip_ip,protocol
+10.0.0.181,yes,b_pool,20.20.20.201:80,bvip_vs,10.10.10.101:80,tcp
+10.0.0.181,yes,c_pool,20.20.20.202:80,cvip_vs,10.10.10.102:80,tcp
+10.0.0.181,yes,d_pool,20.20.20.203:80,dvip_vs,10.10.10.103:80,tcp

@@ -1,0 +1,43 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will read a CSV file for variables and create a gslb configuration. This playbook assumes that vlans and self-ips are already in place. If gslb will be configured on the standby unit as well, uncomment the config-sync session at the bottom of this playbook.
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    
+  tasks:
+  - name: Calling gslb.csv file for variables
+    csv_to_facts:
+      src: ./files/gslb.csv
+
+  - name: Adding server object
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/server"
+      body: '{"name":"gtm-ltm-dallas","datacenter":"Dallas","monitor":"/Common/bigip","product":"single-bigip","addresses":[{"name":"20.20.20.5","deviceName":"/Common/gtm-ltm-dallas"}]}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Adding a virtual server to the gtm-ltm-dallas server object
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/server/~Common~gtm-ltm-dallas/virtual-servers"
+      body: '{"name":"app1","destination":"20.20.20.200:80","monitor":"/Common/gateway_icmp"}'
+      host: "10.0.0.169"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    

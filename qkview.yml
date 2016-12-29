@@ -1,0 +1,17 @@
+---
+   - hosts: loadbalancer
+
+     tasks:
+       - name: Run qkview
+         raw: qkview      
+
+       - name: Waiting for qkview to finish 
+         wait_for:
+         timeout: 45
+
+       - name: Get qkview
+         raw: scp -r /var/tmp/*.qkview lowcher@10.0.0.156:/home/lowcher/ansible/qkviews/
+
+       - name: delete qkview from F5 devices
+         raw: rm -f /var/tmp/*.qkview
+ 

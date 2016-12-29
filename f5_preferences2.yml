@@ -1,0 +1,59 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will change the followin preferences on the F5 loadbalancer.
+#      - Change the default of basic to advanced on all pages in the GUI.
+#      - Change records per screen from the default of 10 to the number specified.
+#      - Apply the specified message as the security banner on the gui login page.
+#      - Sync the config to the second device in the device cluster.
+
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.182"
+
+  tasks:
+  - name: Change preference from basic to advanced
+    icontrol_install_config:
+      method: PATCH
+      uri: "/mgmt/tm/sys/db/ui.system.preferences.advancedselection"
+      body: '{"value":"advanced"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Change records per screen to 20
+    icontrol_install_config:
+      method: PATCH
+      uri: "/mgmt/tm/sys/db/ui.system.preferences.recordsperscreen"
+      body: '{"value":"20"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Apply security banner
+    icontrol_install_config:
+      method: PATCH
+      uri: "/mgmt/tm/sys/globalSettings"
+      body: '{"gui-security-banner":"enabled","gui-security-banner-text":"I hope this works and stay out of my yard"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Config Sync
+    icontrol_install_config:
+      uri: "mgmt/tm/cm/"
+      body: '{"command":"run","utilCmdArgs":"config-sync to-group SyncFail"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+

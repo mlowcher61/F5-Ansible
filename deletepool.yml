@@ -1,0 +1,5 @@
+---
+  - hosts: loadbalancer[0] 
+    tasks:
+      - name: create a pool 
+        raw: "tmsh delete ltm pool markpool" 

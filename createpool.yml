@@ -1,0 +1,5 @@
+---
+  - hosts: loadbalancer 
+    tasks:
+      - name: create a pool 
+        raw: "tmsh create ltm pool markpool members add {20.20.20.200:80} monitor http" 

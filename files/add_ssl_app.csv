@@ -1,0 +1,2 @@
+appliance,primary,poolname,member,vipname,vip_ip,protocol
+10.0.0.169,yes,mytest_ssl_pool,20.20.20.200:443,mytest_ssl_vs,10.10.10.100:443,tcp

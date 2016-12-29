@@ -1,0 +1,32 @@
+#!/usr/bin/ansible-playbook gtmpool.yml
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will read a CSV file for variables and create a gslb configuration. This playbook assumes that vlans and self-ips are already in place. If gslb will be configured on the standby unit as well, uncomment the config-sync session at the bottom of this playbook.
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    
+  tasks:
+  - name: Calling gslb.csv file for variables
+    csv_to_facts:
+      src: ./files/gslb.csv
+
+  - name: Adding wide-ip
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/wideip/a"
+      body: '{"name":"www.app2.com","pools":[ {"name":"firstapp_pool"}]}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
