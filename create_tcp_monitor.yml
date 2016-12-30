@@ -5,7 +5,8 @@
 #      All rights reserved. 
 #
 #      author: Mark Lowcher F5 Networks
-#      description: This playbook will create a tcp monitor. 
+#      description: This playbook will create a tcp monitor on the target system 
+#      and config-sync to it's peer using the "SyncFail" device group . 
 #
 
 - name: F5 Setup

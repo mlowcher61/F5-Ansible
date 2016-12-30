@@ -5,7 +5,10 @@
 #      All rights reserved. 
 #
 #      author: Mark Lowcher F5 Networks
-#      description: This playbook will read a CSV file for variables and create a gslb configuration. This playbook assumes that vlans and self-ips are already in place. If gslb will be configured on the standby unit as well, uncomment the config-sync session at the bottom of this playbook.
+#      description: This playbook will read a CSV file for variables and create 
+#      a gslb configuration. This playbook assumes that vlans and self-ips are 
+#      already in place. If gslb will be configured on the standby unit as well, 
+#      uncomment the config-sync play at the bottom of this playbook.
 #
 
 - name: F5 Setup
