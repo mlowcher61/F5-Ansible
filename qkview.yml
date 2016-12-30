@@ -5,23 +5,29 @@
 #      All rights reserved.
 #
 #      author: Mark Lowcher F5 Networks
-#      description: This playbook will run a qkview on the systems defined as [loadbalancer]
-#      in the /etc/ansible/hosts file. It will wait 45 seconds for the qkview to complete 
-#      and then scp it to the destination and path seen in the "Get qkview play.
+#      description: This playbook will run a qkview on the systems 
+#      defined as [loadbalancer] in the /etc/ansible/hosts file.
+#      It will then upload the qkview to dropbox.f5.com. 
+#      You need to replace the variables below with your case
+#      number and email address used when opening the case. 
 #      It will then delete all qkviews on the target loadbalancer. 
 #
 
    - hosts: loadbalancer[0]
+       vars:
+       case_number: "C123456"
+       password: "m.lowcher@f5.com"
+
      tasks:
+
+       - name: Delete any qkviews already on the device(s)
+         raw: rm -f /var/tmp/*.qkview
+
        - name: Run qkview
          raw: qkview      
 
-       - name: Wait HA IP Info
-         wait_for:
-           timeout: 10
-
-       - name: Get qkview
-         raw: scp -r /var/tmp/*.qkview root@10.0.0.182:/config/qkview/
+       - name: Upload qkview to dropbox
+         raw: sshpass -p "{{password}}" scp -r /var/tmp/*.qkview "{{case_number}}"@dropbox.f5.com:/
 
        - name: delete qkview from F5 devices
          raw: rm -f /var/tmp/*.qkview
