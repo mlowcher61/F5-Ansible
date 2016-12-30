@@ -14,7 +14,7 @@
 #
 
    - hosts: loadbalancer[0]
-       vars:
+     vars:
        case_number: "C123456"
        password: "m.lowcher@f5.com"
 
