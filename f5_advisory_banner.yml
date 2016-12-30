@@ -5,7 +5,9 @@
 #      All rights reserved.
 #
 #      author: Mark Lowcher F5 Networks
-#      description: This playbook will change the preferences on the F5 loadbalancer.
+#      description: This playbook will turn on an advisory banner.
+#      This is useful to alert f5 loadbalancer operators of system
+#      maintenance.
 
 
 - name: F5 Setup
@@ -31,7 +33,7 @@
     icontrol_install_config:
       method: PATCH
       uri: "/mgmt/tm/sys/db/ui.advisory.text"
-      body: '{"value":"Stay out of my yard!"}'
+      body: '{"value":"This device will be rebooted at 17:00"}'
       host: "{{appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
