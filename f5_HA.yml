@@ -276,15 +276,3 @@
       password: "{{setup_pass}}"
     with_items: "{{spreadsheet}}"
     when: item.primary == "no"                  
-  
-   - name: Disable setup wizard
-    icontrol_install_config:
-      uri: "/mgmt/tm/sys/globalSettings"
-      method: PATCH
-      body: '{"hostname":"{{item.hostname}}","guiSetup":"disabled"}'
-      host: "{{item.appliance}}"
-      username: "{{setup_user}}"
-      password: "{{setup_pass}}"
-    with_items: "{{spreadsheet}}"
-    when: item.primary == "yes"
-       

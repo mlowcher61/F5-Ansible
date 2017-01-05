@@ -64,7 +64,7 @@
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
 
-  - name: Wait HA IP Info
+  - name: Wait to complete
     wait_for:
       timeout: 5
 
@@ -80,7 +80,7 @@
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
 
-  - name: Wait HA IP Info
+  - name: Wait for server object to be added
     wait_for:
       timeout: 10
 
