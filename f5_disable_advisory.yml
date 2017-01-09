@@ -20,7 +20,7 @@
     appliance: "10.0.0.181"
 
   tasks:
-  - name: Disabling advisory banner
+  - name: Turning off advisory banner
     icontrol_install_config:
       method: PATCH
       uri: "/mgmt/tm/sys/db/ui.advisory.enabled"
