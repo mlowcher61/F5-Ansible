@@ -1,0 +1,6 @@
+---
+  - hosts: loadbalancer
+    tasks:
+      - name: Provision APM	
+        raw: tmsh modify sys provision apm level nominal 
+

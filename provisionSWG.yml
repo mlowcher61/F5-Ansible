@@ -1,0 +1,6 @@
+---
+  - hosts: loadbalancer
+    tasks:
+      - name: Provision SWG	
+        raw: tmsh modify sys provision swg level nominal 
+

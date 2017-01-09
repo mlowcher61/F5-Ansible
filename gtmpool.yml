@@ -35,7 +35,7 @@
     icontrol_install_config:
       method: "_post_"
       uri: "/mgmt/tm/gtm/pool/a/~Common~firstapp_pool/members"
-      body: '{"name":"gtm-ltm-dallas:mytest_vs","members":"~Common~gtm-ltm-dallas/mytest_vs"}'
+      body: '{"name":"gtm-ltm-dallas:app1","members":"~Common~gtm-ltm-dallas/app1"}'
       host: "{{item.appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"

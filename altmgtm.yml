@@ -16,8 +16,13 @@
   vars:
     setup_user: "admin"
     setup_pass: "admin"
+    appliance: "10.0.0.181"
 
   tasks:
 
+  - include: license_f5_pair.yml
   - include: f5_HA.yml
+  - include: provisionGTM.yml
+  - include: f5_preferences.yml
   - include: add_app.yml
+  - include: gslbfinal.yml

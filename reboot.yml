@@ -1,0 +1,6 @@
+---
+  - hosts: loadbalancer
+    tasks:
+      - name: Rebooting loadbalancers
+        raw: reboot 
+
