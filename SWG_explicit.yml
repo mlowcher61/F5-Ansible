@@ -1,0 +1,86 @@
+#!/usr/bin/ansible-playbook gtmpool.yml
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will read a CSV file for variables and create an SWG explicit configuration.
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.164"
+    
+  tasks:
+
+  - name: Create a DNS resolver
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/net/dns-resolver"
+      body: '{"name": "explicit-resolver","forwardZones": [
+      { "name": ".", "nameservers": [ { "name": "20.20.20.2:53"}]}]}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Create an explicit tcp-tunnel
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/net/tunnels/tunnel"
+      body: '{"name":"explicit-tunnel","profile": "/Common/tcp-forward"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Create explicit http profile
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/ltm/profile/http"
+      body: '{"name": "explicit-http","defaultsFrom": "/Common/http-explicit","oneconnectTransformations": "disabled","explicitProxy": {
+      "dnsResolver": "/Common/explicit-resolver", "tunnelName": "/Common/explicit-tunnel"}}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Adding an explicit http VIP
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/ltm/virtual"
+      body: '{"name":"explicit-http-vs","destination":"20.20.20.225:3128","ipProtocol":"tcp","sourceAddressTranslation": { "type":"automap" },"profiles": [ { "name":"/Common/tcp-lan-optimized", "context":"clientside" },{ "name":"/Common/tcp-wan-optimized", "context":"serverside" },"/Common/explicit-http"]}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Create the explicit clientssl profile
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/ltm/profile/client-ssl"
+      body: '{"name":"explicit-clientssl","proxyCaCert":"/Common/explicit.crt","proxyCaKey":"/Common/explicit.key","sslForwardProxy": "enabled","sslForwardProxyBypass": "enabled"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Create the explicit serverssl profile
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/ltm/profile/server-ssl"
+      body: '{"name":"explicit-serverssl","sslForwardProxy": "enabled","sslForwardProxyBypass": "enabled"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Adding an explicit httpS VIP
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/ltm/virtual"
+      body: '{"name":"explicit-https-vs","destination":"0.0.0.0:443","ipProtocol":"tcp","sourceAddressTranslation": { "type":"automap" },"vlans": [ "/Common/explicit-tunnel"],"profiles": [ { "name":"/Common/tcp-lan-optimized", "context":"clientside" },{ "name":"/Common/tcp-wan-optimized", "context":"serverside" },"/Common/http","/Common/explicit-clientssl","/Common/explicit-serverssl"]}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+

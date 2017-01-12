@@ -22,8 +22,8 @@
   - name: Create an explicit tcp-tunnel
     icontrol_install_config:
       method: "_post_"
-      uri: "/mgmt/tm/net/tunnels/tcp-forward"
-      body: '{"name":"explicit-tcp-tunnel"}'
+      uri: "/mgmt/tm/net/tunnels/tunnel"
+      body: '{"name":"explicit-tunnel","profile": "/Common/tcp-forward"}'
       host: "{{appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"

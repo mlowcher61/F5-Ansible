@@ -23,24 +23,8 @@
     icontrol_install_config:
       method: "_post_"
       uri: "/mgmt/tm/ltm/profile/http"
-      body: '{
-    "name": "explicit-http",
-    "acceptXff": "disabled",
-    "defaultsFrom": "/Common/http-explicit"
-    },
-    "explicitProxy": {
-      "defaultConnectHandling": "deny",
-      "dnsResolver": "/Common/explicit-resolver"
-    },
-    "insertXforwardedFor": "disabled",
-    "oneconnectTransformations": "disabled",
-    "proxyType": "explicit",
-    "redirectRewrite": "none",
-    "requestChunking": "preserve",
-    "responseChunking": "selective",
-    "viaRequest": "preserve",
-    "viaResponse": "preserve"
-  }'
+      body: '{"name": "explicit-http","acceptXff": "disabled","defaultsFrom": "/Common/http-explicit"},
+    "explicitProxy": { ["defaultConnectHandling": "deny","dnsResolver": "/Common/explicit-resolver","tunnel-name": "http-tunnel", "insertXforwardedFor": "disabled", "oneconnectTransformations": "disabled","proxyType": "explicit"]}'
       host: "{{appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
