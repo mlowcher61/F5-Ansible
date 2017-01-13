@@ -31,7 +31,7 @@
       uri: "/mgmt/tm/sys/globalSettings"
       method: PATCH
       body: '{"hostname":"bigip1","guiSetup":"disabled"}'
-      host: "10.0.0.182"
+      host: "10.0.0.164"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
 

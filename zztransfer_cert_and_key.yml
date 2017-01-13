@@ -24,8 +24,8 @@
   - name: Move cert to F5 device
     icontrol_install_config: 
       method: "_post_"
-      uri: "/mgmt/tm/sys/crypto/cert"
-      body: '{"command":"install","name":"{{item.cert_name}}","from-local-file":"/var/tmp/"{{item.crt}}"}'
+      uri: "/mgmt/tm/sys/file/ssl-cert"
+      body: '{"command":"install","name":"{{item.cert_name}}","from-local-file":"/var/tmp/lowcher.crt"}'
       host: "{{item.appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
@@ -34,8 +34,8 @@
   - name: Move key to F5 device
     icontrol_install_config:
       method: "_post_"
-      uri: "/mgmt/tm/sys/crypto/key"
-      body: '{"command":"install","name":"{{item.key_name}}","from-local-file":"/var/tmp/"{{item.key}}"}'
+      uri: "/mgmt/tm/sys/file/ssl-key"
+      body: '{"command":"install","name":"{{item.key_name}}","from-local-file":"/var/tmp/lowcher.key"}'
       host: "{{item.appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
