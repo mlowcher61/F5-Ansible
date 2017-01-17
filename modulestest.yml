@@ -1,0 +1,17 @@
+---
+
+- name: Push cert and key to f5
+  hosts: 10.0.0.164
+  connection: local
+
+  tasks:
+   -name push cert and key to f5
+    bigip_ssl_certificate:
+        name: "lowcher"
+        server: "10.0.0.164"
+        user: "admin"
+        password: "admin"
+        state: "present"
+        cert_src: "/var/tmp/lowcher.crt"
+        key_src: "/var/tmp/lowcher.key"
+    delegate_to: localhost

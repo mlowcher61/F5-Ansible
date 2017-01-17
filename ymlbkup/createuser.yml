@@ -13,11 +13,11 @@
   connection: local
   gather_facts: no
 
+    tasks:
 
-  tasks:
       - name: Add the user 'johnd' with a specific role on the provided partition
         bigip_user:
-#            login_host: "10.0.0.157"
+            login_host: "10.0.0.181"
             login_user: "admin"
             login_password: "admin"
             name: "johnd"
@@ -31,7 +31,7 @@
 
       - name: Get the facts for the admin user
         bigip_user_facts:
-            server: "10.0.0.157"
+            server: "10.0.0.181"
             user: "admin"
             password: "admin"
             name: "johnd"
@@ -42,7 +42,7 @@
 
       - name: Set the admin user's shell
         bigip_user:
-            login_host: "10.0.0.157"
+            login_host: "10.0.0.181"
             login_user: "admin"
             login_password: "admin"
             name: "admin"

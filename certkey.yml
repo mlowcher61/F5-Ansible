@@ -1,0 +1,18 @@
+---
+
+- name: Create a VIP, pool, pool members and nodes
+  hosts: 10.0.0.181
+  connection: local
+
+  tasks:
+   - name: Push cert and key to F5
+     bigip_ssl_certificate:
+         name: "lowcher"
+         server: "10.0.0.181"
+         user: "admin"
+         password: "admin"
+         state: "present"
+         cert_src: "/var/tmp/lowcher.crt"
+         key_src: "/var/tmp/lowcher.key"
+     delegate_to: localhost
+
