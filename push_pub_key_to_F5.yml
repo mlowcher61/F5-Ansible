@@ -1,5 +1,5 @@
 ---
-   - hosts: loadbalancer
+   - hosts: Big-IQ
 
      tasks:
        - name: push public key

@@ -16,7 +16,7 @@
   vars:
     setup_user: "admin"
     setup_pass: "admin"
-    appliance: "10.0.0.164"
+    appliance: "[loadbalancer]"
 
   tasks:
   - name: Assign the LTM provisioning

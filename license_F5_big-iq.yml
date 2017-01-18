@@ -1,0 +1,6 @@
+---
+  - hosts: big-IQ
+    tasks:
+      - name: License Big-IP
+        raw: tmsh install sys license registration-key BCSBP-EQWQOG-UIF-DBXDJIP-SDYXCPC
+
