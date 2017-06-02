@@ -20,7 +20,7 @@
   vars:
     setup_user: "admin"
     setup_pass: "admin"
-    appliance: "10.0.0.181"
+    appliance: "10.0.0.171"
 
   tasks:
   - name: Change preference from basic to advanced

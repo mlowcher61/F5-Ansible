@@ -1,6 +1,0 @@
----
-  - hosts: loadbalancer
-    tasks:
-      - name: Provision ASM
-        raw: tmsh modify sys provision asm level nominal 
-

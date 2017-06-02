@@ -16,7 +16,7 @@
   vars:
     setup_user: "admin"
     setup_pass: "admin"
-    appliance: "[loadbalancer]"
+    appliance: "10.0.0.170"
 
   tasks:
   - name: Assign the LTM provisioning
@@ -32,7 +32,7 @@
     icontrol_install_config:
       method: PATCH
       uri: "/mgmt/tm/sys/provision/gtm"
-      body: '{"level":"nominal"}'
+      body: '{"level":"none"}'
       host: "{{appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
@@ -41,7 +41,7 @@
     icontrol_install_config:
       method: PATCH
       uri: "/mgmt/tm/sys/provision/asm"
-      body: '{"level":"none"}'
+      body: '{"level":"nominal"}'
       host: "{{appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
@@ -68,16 +68,7 @@
     icontrol_install_config:
       method: PATCH
       uri: "/mgmt/tm/sys/provision/swg"
-      body: '{"level":"nominal"}'
+      body: '{"level":"none"}'
       host: "{{appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
-
-  - name: Config Sync
-    icontrol_install_config:
-      uri: "mgmt/tm/cm/"
-      body: '{"command":"run","utilCmdArgs":"config-sync to-group SyncFail"}'
-      host: "{{appliance}}"
-      username: "{{setup_user}}"
-      password: "{{setup_pass}}"
-

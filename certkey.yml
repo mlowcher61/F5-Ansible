@@ -1,6 +1,6 @@
 ---
 
-- name: Create a VIP, pool, pool members and nodes
+- name: Push certificate and key to F5 device
   hosts: 10.0.0.181
   connection: local
 
@@ -8,7 +8,7 @@
    - name: Push cert and key to F5
      bigip_ssl_certificate:
          name: "lowcher"
-         server: "10.0.0.181"
+         server: "10.0.0.171"
          user: "admin"
          password: "admin"
          state: "present"
