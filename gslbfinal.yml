@@ -9,7 +9,8 @@
 #      a gslb configuration. This playbook assumes that vlans and self-ips are 
 #      already in place. If gslb will be configured on the standby unit as well, 
 #      uncomment the config-sync play at the bottom of this playbook.
-#
+#      Whether GSLB is configured on one device in a pair or both, you will need
+#      to provision DNS (GTM) on both devices.
 
 - name: F5 Setup
   hosts: localhost

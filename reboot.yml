@@ -1,4 +1,17 @@
+#!/usr/bin/ansible-playbook
 ---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will reboot a loadbalancer.
+#      It will look in your /etc/ansible/hosts file and reboot loadbalancers 
+#      defined under [loadbalancer] If you call loadbalancer by itself 
+#      it will reboot ALL loadbalancers defined. If you change hosts below 
+#      to loadbalancer[0] it will reboot the first loadbalancer in the list.
+#      loadbalancer[2] would reboot the third loadbalancer in the list.
+
   - hosts: loadbalancer
     tasks:
       - name: Rebooting loadbalancers

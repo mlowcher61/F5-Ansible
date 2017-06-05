@@ -1,4 +1,15 @@
+#!/usr/bin/ansible-playbook
 ---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will push a public key to all the F5s listed 
+#      in /etc/ansible/hosts under [loadbalancer]
+#      The user would keep the private key on their jump server and they would
+#      then be able to ssh to loadbalancers without providing a password.
+
    - hosts: loadbalancer
 
      tasks:
