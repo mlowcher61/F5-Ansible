@@ -1,0 +1,28 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will push a certificate and key 
+#      to the selected host.
+#      Edit the attributes accordingly.
+#      
+
+- name: Push PEM Certificate and key
+  hosts: "10.0.0.174"
+  connection: local
+
+  tasks: 
+   - name: Pushing the certificate and key to the F5
+     bigip_ssl_certificate:
+         state: "present"
+         server: "10.0.0.174"
+         user: "admin"
+         password: "admin"
+         name: "lowcher"
+         cert_src: "/var/tmp/lowcher.crt"
+         key_src: "/var/tmp/lowcher.key"
+         validate_certs: "no"
+     delegate_to: localhost

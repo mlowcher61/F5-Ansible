@@ -1,0 +1,74 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will set the resource provisioning. 
+#      Edit the value of "level" accordingly
+
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.170"
+
+  tasks:
+  - name: Assign the LTM provisioning
+    icontrol_install_config:
+      method: PATCH
+      uri: "/mgmt/tm/sys/provision/ltm"
+      body: '{"level":"nominal"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Assign the GTM provisioning
+    icontrol_install_config:
+      method: PATCH
+      uri: "/mgmt/tm/sys/provision/gtm"
+      body: '{"level":"none"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Assign the ASM provisioning
+    icontrol_install_config:
+      method: PATCH
+      uri: "/mgmt/tm/sys/provision/asm"
+      body: '{"level":"nominal"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Assign the AFM provisioning
+    icontrol_install_config:
+      method: PATCH
+      uri: "/mgmt/tm/sys/provision/afm"
+      body: '{"level":"none"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Assign the AVR provisioning
+    icontrol_install_config:
+      method: PATCH
+      uri: "/mgmt/tm/sys/provision/avr"
+      body: '{"level":"none"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+  - name: Assign the SWG provisioning
+    icontrol_install_config:
+      method: PATCH
+      uri: "/mgmt/tm/sys/provision/swg"
+      body: '{"level":"none"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"

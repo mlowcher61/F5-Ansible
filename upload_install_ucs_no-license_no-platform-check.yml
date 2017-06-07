@@ -1,0 +1,28 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a static route. 
+#      The "state" attribute should be set to "present" to create the
+#      route and to "absent" to delete the route.
+#      Edit ip addresses, username and password accordingly.
+
+- name: Create a static route
+  hosts: 10.0.0.174
+  connection: local
+
+  tasks: 
+   - name: Install (upload, install) UCS except the license and bypassing the platform check
+     bigip_software:
+         server: "10.0.0.174"
+         user: "admin"
+         password: "admin"
+         ucs: "/root/bigip.localhost.ucs"
+         state: "installed"
+         no_license: "yes"
+         no_platform_check: "yes"
+         validate_certs: "no"
+     delegate_to: localhost

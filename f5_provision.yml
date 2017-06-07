@@ -1,0 +1,23 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will provision the selected module.
+
+- name: Provision modules
+  hosts: 10.0.0.174
+  connection: local
+
+  tasks: 
+   - name: Provisioning modules
+     bigip_provision:
+         module: "gtm"
+         level: "nominal"
+         server: "10.0.0.174"
+         user: "admin"
+         password: "admin"
+         validate_certs: "no"
+     delegate_to: localhost
