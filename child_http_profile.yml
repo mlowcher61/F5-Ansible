@@ -1,0 +1,29 @@
+#!/usr/bin/ansible-playbook 
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a child http profile with the default http profile as the parent.
+#      Edit the "vars" below accordingly.
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.160"
+    child_http: "fourth__http_profile"
+ 
+  tasks:
+  - name: Create a child http profile
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/ltm/profile/http"
+      body: '{"name": "{{child_http}}","defaultsFrom": "/Common/http","insertXforwardedFor": "disabled"}' 
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"

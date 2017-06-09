@@ -1,0 +1,2 @@
+appliance,primary,udp_name,tcp_name,listener_address,datacenter1,datacenter2,server_object2
+10.0.0.174,yes,green_udp_listener,green_tcp_listener,20.20.20.200,Dallas,Secaucas,gtm-ltm-secaucus

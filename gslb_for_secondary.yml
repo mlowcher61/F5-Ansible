@@ -1,0 +1,87 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will read a CSV file for variables and create 
+#      a the gslb configuration on the seconday F5 DNS that is needed to run the 
+#      the gtm_add script. This playbook assumes that vlans and self-ips are 
+#      already in place.
+#      Whether GSLB is configured on one device in a pair or both, you will need
+#      to provision DNS (GTM) on both devices. This playbook will perform the following.
+#      - Create two listeners. A TCP and a UDP listener.
+#      - Create two datacenters.
+#      - Add the secondary F5 DNS as a server object 
+
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    
+  tasks:
+  - name: Pulling variables from ./files/gslb_for_secondary.csv
+    csv_to_facts:
+      src: ./files/gslb_for_secondary.csv
+
+  - name: Adding a UDP GTM listener
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/listener"
+      body: '{"name":"{{item.udp_name}}","address":"{{item.listener_address}}","ipProtocol":"udp"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    
+  - name: Adding a TCP GTM listener
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/listener"
+      body: '{"name":"{{item.tcp_name}}","address":"{{item.listener_address}}","ipProtocol":"tcp"}'     
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+
+  - name: Defining the "{{datacenter1}}" datacenter
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/datacenter"
+      body: '{"name":"{{item.datacenter1}}","location":"{{item.datacenter1}}"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+
+  - name: Defining the "{{datacenter2}}" datacenter
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/datacenter"
+      body: '{"name":"{{item.datacenter2}}","location":"{{item.datacenter2}}"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+
+  - name: Wait 5 seconds before continuing
+    wait_for:
+      timeout: 5
+
+  - name: Adding secondary server object
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/server"
+      body: '{"name":"{{item.server_object2}}","datacenter":"{{item.datacenter2}}","monitor":"/Common/bigip","product":"single-bigip","addresses":[{"name":"{{item.server_object2_self}}","deviceName":"{{item.deviceName2}}"}]}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"

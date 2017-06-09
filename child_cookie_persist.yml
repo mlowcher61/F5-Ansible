@@ -1,0 +1,30 @@
+#!/usr/bin/ansible-playbook 
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a child cookie persistence profile 
+#      with the default cookie persistence profile as the parent.
+#      Edit the "vars" below accordingly. Enable "matchAcross*" as desired.
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.160"
+    child_cookie: "app1_cookie_persist"
+ 
+  tasks:
+  - name: Create a child cookie persistence profile
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/ltm/persistence/cookie"
+      body: '{"name": "{{child_cookie}}","defaultsFrom": "/Common/cookie","matchAcrossPools": "disabled", "matchAcrossServices": "disabled", "matchAcrossVirtuals": "disabled"}' 
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
