@@ -5,10 +5,11 @@
 #      All rights reserved.
 #
 #      author: Mark Lowcher F5 Networks
-#      description: This playbook will create a static route. 
-#      The "state" attribute should be set to "present" to create the
-#      route and to "absent" to delete the route.
-#      Edit ip addresses, username and password accordingly.
+#      description: This playbook will upload and install a .ucs  
+#      backup. You can disable the "no_license" and "no_platform_check
+#      if desired.
+#      Edit ip addresses, set the ucs source path and edit the
+#      username and password accordingly.
 
 - name: Create a static route
   hosts: 10.0.0.174

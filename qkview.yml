@@ -11,7 +11,8 @@
 #      You need to replace the variables below with your case
 #      number and email address used when opening the case. 
 #      It will then delete all qkviews on the target loadbalancer. 
-#
+#      The F5 devices must have internet access for the upload to dropbox 
+#      to work.
 
    - hosts: loadbalancer[0]
      vars:

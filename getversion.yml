@@ -7,8 +7,13 @@
 #      author: Mark Lowcher F5 Networks
 #      description: This playbook will run an arbitrary
 #      tmsh command from bash. In this example it will 
-#      run "tmsh show sys version" Notice you don't need
-#      the "tmsh" as part of the command in this playbook.
+#      run "tmsh show sys version" and "tmsh list ltm virtual
+#      Notice you don't need the "tmsh" as part of the
+#      command in this playbook.
+#
+#      ~~~~~~~~~~~~~~~NOTICE~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#      This playbook will not work until Ansible 2.4
+#      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - name: run show version on remote devices
   hosts: 10.0.0.160
