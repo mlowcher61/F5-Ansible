@@ -10,7 +10,14 @@
 #      already in place. If gslb will be configured on the standby unit as well, 
 #      uncomment the config-sync play at the bottom of this playbook.
 #      Whether GSLB is configured on one device in a pair or both, you will need
-#      to provision DNS (GTM) on both devices.
+#      to provision DNS (GTM) on both devices. This playbook will perform the following.
+#      - Create two listeners. A TCP and a UDP listener.
+#      - Create two datacenters.
+#      - Add a server object to both datacenters
+#      - Add one virtual server to each server object
+#      - Create the GSLB pool with the two virtual servers
+#      - Create the wideip with the GSLB pool attached.
+#
 
 - name: F5 Setup
   hosts: localhost
@@ -25,11 +32,11 @@
     csv_to_facts:
       src: ./files/gslb.csv
 
-  - name: Addng a UDP GTM listener
+  - name: Adding a UDP GTM listener
     icontrol_install_config: 
       method: "_post_"
       uri: "/mgmt/tm/gtm/listener"
-      body: '{"name":"{{item.udp_name}}","address":"{{item.address}}","ipProtocol":"udp"}'
+      body: '{"name":"{{item.udp_name}}","address":"{{item.listener_address}}","ipProtocol":"udp"}'
       host: "{{item.appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
@@ -39,7 +46,7 @@
     icontrol_install_config: 
       method: "_post_"
       uri: "/mgmt/tm/gtm/listener"
-      body: '{"name":"{{item.tcp_name}}","address":"{{item.address}}","ipProtocol":"tcp"}'     
+      body: '{"name":"{{item.tcp_name}}","address":"{{item.listener_address}}","ipProtocol":"tcp"}'     
       host: "{{item.appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
@@ -68,7 +75,7 @@
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
 
-  - name: Wait HA IP Info
+  - name: Wait 5 seconds before continuing
     wait_for:
       timeout: 5
 
@@ -105,7 +112,7 @@
   - name: Adding a virtual server to the "{{item.server_object2}}" server object
     icontrol_install_config:
       method: "_post_"
-      uri: "/mgmt/tm/gtm/server/~Common~gtm-ltm-secaucus/virtual-servers"
+      uri: "/mgmt/tm/gtm/server/~Common~"{{item.server_object2}}"/virtual-servers"
       body: '{"name":"{{item.vip2_name}}","destination":"{{item.vip2_ipport}}","monitor":"/Common/gateway_icmp"}'
       host: "{{item.appliance}}"
       username: "{{setup_user}}"
@@ -124,8 +131,8 @@
   - name: Adding members to "{{item.app1_pool}}"
     icontrol_install_config:
       method: "_post_"
-      uri: "/mgmt/tm/gtm/pool/a/~Common~firstapp_pool/members"
-      body: '{"name":"gtm-ltm-dallas:app1","members":"~Common~gtm-ltm-dallas/app1"}'
+      uri: "/mgmt/tm/gtm/pool/a/~Common~"{{app1_pool}}"/members"
+      body: '{"name":"{{server_object1}}":app1","members":"~Common~"{{item.server_object1}}"/app1"}'
       host: "{{item.appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
@@ -135,7 +142,7 @@
     icontrol_install_config:
       method: "_post_"
       uri: "/mgmt/tm/gtm/wideip/a"
-      body: '{"name":"www.app1.com","pools":[ {"name":"firstapp_pool"}]}'
+      body: '{"name":"{{wideip}}","pools":[ {"name":"{{app1_pool}}"}]}'
       host: "{{item.appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
