@@ -1,0 +1,20 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will reset to a factory default
+#      configuration. It will leave the license and hostname in tact.
+#      Edit the attributes accordingly.
+
+- name: Reset the BIG-IP configuration, for example, to RMA the device
+  bigip_config:
+    reset: yes
+    save: yes
+    server: "10.0.0.160"
+    password: "admin"
+    user: "admin"
+    validate_certs: "no"
+  delegate_to: localhost
