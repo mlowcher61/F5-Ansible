@@ -1,0 +1,5 @@
+appliance,primary,poolname,vipname,vip_ip,protocol,node1name,node2name,node1,node2,lb_method,monitors,http_profile,clientssl,http_redirect
+10.0.0.160,yes,first_pool,first_vs,20.20.20.101:80,tcp,firstnode1,firstnode2,10.10.10.201:80,10.10.10.101:80,least-connections-member,first_http_monitor,first_http_profile,first_clientssl,http_redirect1
+10.0.0.160,yes,second_pool,second_vs,20.20.20.102:80,tcp,secondnode1,secondnode2,10.10.10.202:80,10.10.10.102:80,round-robin,second_http_monitor,second_http_profile,second_clientssl,http_redirect2
+10.0.0.160,yes,third_pool,third_vs,20.20.20.103:80,tcp,thirdnode1,thirdnode2,10.10.10.203:80,10.10.10.103:80,ratio-member,third_http_monitor,third_http_profile,third_clientssl,http_redirect3
+10.0.0.160,yes,fourth_pool,fourth_vs,20.20.20.104:80,tcp,fourthnode1,fourthnode2,10.10.10.204:80,10.10.10.104:80,least-connections-member,fourth_http_monitor,fourth_http_profile,fourth_clientssl,http_redirect4
