@@ -24,7 +24,11 @@
          raw: rm -f /var/tmp/*.qkview
 
        - name: Run qkview
-         raw: qkview      
+         raw: qkview 
+  
+       - name: Wait one minute for qkview to finish
+         wait_for:
+           timeout: 60   
 
        - name: Upload qkview to dropbox
          raw: sshpass -p "{{password}}" scp -r /var/tmp/*.qkview "{{case_number}}"@dropbox.f5.com:/
