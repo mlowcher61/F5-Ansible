@@ -11,6 +11,7 @@
 #      Create your child profiles and monitors first and change the names
 #      in this playbook accordingly. The profiles used for the redirect
 #      vip can remain unchanged.
+#      Requires Ansible 2.3 or higher
 
 - name: Create a VIP, pool, members and nodes
   hosts: 10.0.0.160
@@ -37,7 +38,7 @@
         validate_certs: "no"
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
-#    delegate_to: localhost
+    delegate_to: localhost
 
   - name: Create node1
     bigip_node:
@@ -49,7 +50,7 @@
         validate_certs: "no"
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
-#    delegate_to: localhost
+    delegate_to: localhost
 
   - name: Create node2
     bigip_node:
@@ -61,22 +62,19 @@
         validate_certs: "no"
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
-#    delegate_to: localhost
+    delegate_to: localhost
 
   - name: Add nodes to pool
     bigip_pool_member:
-        description: "webserver-1"
-        host: "{{ item.host }}"
-        name: "{{ item.name }}"
         password: "admin"
-        pool: "web_pool"
+        pool: "{{item.poolname}}"
         port: "80"
         server: "{{appliance}}"
         user: "admin"
         validate_certs: "no"
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
-#    delegate_to: localhost
+    delegate_to: localhost
     with_items:
         - host: "{{item.node1}}"
           name: "{{item.node1name}}"
@@ -100,7 +98,7 @@
         validate_certs: "no"
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
-#    delegate_to: localhost
+    delegate_to: localhost
 
   - name: Create a redirect virtual server
     bigip_virtual_server:
@@ -118,4 +116,4 @@
         validate_certs: "no"
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes" 
-#    delegate_to: localhost
+    delegate_to: localhost

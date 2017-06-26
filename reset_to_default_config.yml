@@ -8,13 +8,19 @@
 #      description: This playbook will reset to a factory default
 #      configuration. It will leave the license and hostname in tact.
 #      Edit the attributes accordingly.
+#      Requires Ansible 2.4 or higher
 
 - name: Reset the BIG-IP configuration, for example, to RMA the device
-  bigip_config:
-    reset: yes
-    save: yes
-    server: "10.0.0.160"
-    password: "admin"
-    user: "admin"
-    validate_certs: "no"
-  delegate_to: localhost
+  hosts: 10.0.0.160
+  connection: local
+
+  tasks:
+   - name: resetting now
+     bigip_config:
+         reset: "yes"
+         save: "yes"
+         server: "10.0.0.160"
+         password: "admin"
+         user: "admin"
+         validate_certs: "no"
+     delegate_to: localhost

@@ -20,7 +20,7 @@
          server: "10.0.0.160"
          user: "admin"
          password: "admin"
-         name: "ansible_http_monitor"
+         name: "ansible_http_monitor2"
          send: "http string to send"
          receive: "http string to receive"
          validate_certs: "no"
