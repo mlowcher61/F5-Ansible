@@ -6,6 +6,7 @@
 #
 #      author: Mark Lowcher F5 Networks
 #      description: This playbook will provision the selected module.
+#      The bigip_provision module requires Ansible v2.4 or >
 
 - name: Provision modules
   hosts: 10.0.0.174

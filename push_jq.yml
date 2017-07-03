@@ -9,7 +9,7 @@
 #      that will parse JSON data to make it more readable. It is useful for browsing APIs. 
 #      Example:  curl -sku admin:admin https://localhost/mgmt/tm/ltm/profile/http | jq .items
 
-   - hosts: loadbalancer
+   - hosts: loadbalancer[3]
 
      tasks:
        - name: push jq

@@ -1,6 +1,6 @@
 ---
-  - hosts: loadbalancer[2]
+  - hosts: loadbalancer[3]
     tasks:
       - name: License Big-IP
-        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey CXQDN-XCKVX-ADXVN-HEXAT-FXJYZNO
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey ZANPD-SEZCQ-ZYBBY-XQZKE-EOJPDNQ
 
