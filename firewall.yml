@@ -1,0 +1,33 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks. 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks 
+#      description: This playbook will create firewall rules.
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.160"
+    
+  tasks:
+#  - name: Get facts from CSV file
+#    csv_to_facts:
+#      src: ./files/firewall.csv
+
+  - name: Creating a firewall rule
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/security/firewall/rule-list/~Common~test-firewall-rule/rules"
+      body: '{"name":"Allow-port-8000","ipProtocol":"tcp","action":"accept","status":"enabled","destination":"10.2.3.5","portLists":"8000"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+#    with_items: "{{spreadsheet}}"

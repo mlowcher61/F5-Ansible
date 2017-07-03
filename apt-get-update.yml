@@ -1,0 +1,25 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will perform the steps to configure
+
+- name: Creating a docker system running two instances of ACproxy
+  hosts: 10.0.0.180
+  sudo: yes
+  connection: local
+  gather_facts: no
+  vars:
+    appliance: "10.0.0.180"
+    setup_user: "acproxy"
+    setup_pass: "acproxy"
+    ACproxy_code: "f5-acproxy-1.0.0-build.44.tgz"
+    ACproxy_start: "acproxy:1.0.0-build.44"
+
+  tasks:
+   - name: Updating apt
+     shell: apt-get update
+     sudo: yes

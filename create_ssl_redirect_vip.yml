@@ -1,0 +1,136 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a pool with two members
+#      attached to an ssl offload vip. It will also create a redirect vip
+#      to make sure people get to the 443 vip. 
+#      Create your child profiles and monitors first and change the names
+#      in this playbook accordingly. The profiles used for the redirect
+#      vip can remain unchanged.
+#      Requires Ansible 2.3 or higher
+
+- name: Create a VIP, pool, members and nodes
+  hosts: 10.0.0.160
+  connection: local
+  gather_facts: no
+  vars:
+    appliance: "10.0.0.160"
+    setup_user: "admin"
+    setup_pass: "admin"
+    lb_method: "least_connection_member"
+    poolname: "web_pool"
+    monitor: "http"
+    http_profile: "http"
+    node1: "10.10.10.100"
+    node2: "10.10.10.101"
+    node1name: "first_node_name"
+    node2name: "second_node_name"
+    vipname: "my_vip"
+    member_port: "80"
+    vip_ip: "20.20.20.200"
+    vip_port: "443"
+    clientssl: "clientssl"
+    http_redirect: "my_redirect"
+    
+
+  tasks:
+
+  - name: Create a pool
+    bigip_pool:
+        lb_method: "{{lb_method}}"
+        monitors: "{{monitor}}"
+        name: "{{poolname}}"
+        password: "{{setup_pass}}"
+        server: "{{appliance}}"
+        slow_ramp_time: "120"
+        user: "{{setup_user}}"
+        state: "present"
+        validate_certs: "no"
+    delegate_to: localhost
+
+  - name: Create node1
+    bigip_node:
+        host: "{{node1}}"
+        name: "{{node1name}}"
+        password: "{{setup_pass}}"
+        server: "{{appliance}}"
+        user: "{{setup_user}}"
+        state: "present"
+        validate_certs: "no"
+    delegate_to: localhost
+
+  - name: Create node2
+    bigip_node:
+        host: "{{node2}}"
+        name: "{{node2name}}"
+        password: "{{setup_pass}}"
+        server: "{{appliance}}"
+        user: "{{setup_user}}"
+        state: "present"
+        validate_certs: "no"
+    delegate_to: localhost
+
+  - name: Add first node to pool
+    bigip_pool_member:
+        password: "{{setup_pass}}"
+        pool: "{{poolname}}"
+        port: "{{member_port}}"
+        server: "{{appliance}}"
+        user: "{{setup_user}}"
+        state: "present"
+        validate_certs: "no"
+        host: "{{node1}}"
+        name: "{{node1name}}"
+    delegate_to: localhost
+
+  - name: Add second node to pool
+    bigip_pool_member:
+        password: "{{setup_pass}}"
+        pool: "{{poolname}}"
+        port: "{{member_port}}"
+        server: "{{appliance}}"
+        user: "{{setup_user}}"
+        state: "present"
+        validate_certs: "no"
+        host: "{{node2}}"
+        name: "{{node2name}}"
+    delegate_to: localhost
+
+
+  - name: Create a VIP
+    bigip_virtual_server:
+        description: "{{vipname}}"
+        destination: "{{vip_ip}}"
+        password: "{{setup_pass}}"
+        name: "{{vipname}}"
+        pool: "{{poolname}}"
+        port: "{{vip_port}}"
+        server: "{{appliance}}"
+        snat: "Automap"
+        user: "{{setup_user}}"
+        state: "present"
+        all_profiles:
+            - "{{http_profile}}"
+            - "{{clientssl}}"
+        validate_certs: "no"
+    delegate_to: localhost
+
+  - name: Create a redirect virtual server
+    bigip_virtual_server:
+        description: "Redirect Virtual Server"
+        server: "{{appliance}}"
+        user: "{{setup_user}}"
+        password: "{{setup_pass}}"
+        name: "{{http_redirect}}"
+        destination: "{{vip_ip}}" 
+        port: 80
+        all_profiles:
+            - "http"
+        all_rules:
+            - _sys_https_redirect   
+        validate_certs: "no"
+    delegate_to: localhost

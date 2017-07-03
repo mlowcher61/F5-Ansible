@@ -1,0 +1,60 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will perform the steps to configure
+#      ACProxy on a linux machine in the cloud
+#      A deployment guide can be found at https://github.com/mlowcher61
+#      The steps are as follows:
+#      - Spin up an instance of Linux Ubuntu in your cloud.
+#      - Perform steps neccessary to have Ansible ssh to the linux host
+#      - Verify that the linux host can access the internet
+#      - Put ACproxy code into your working directory in Ansible host
+#        as well as the docker.list file (~/ansible/playbooks)
+#      - Run the "acproxy_part1" playbook before this one and 
+#        run "sudo apt-get update" on the linux host prior to running
+#        this playbook. There is currently a known bug with apt that
+#        does not allow Ansible to run apt-get update from a playbook.
+#      - This playbook will Install Docker on the Linux host
+#      - This playbook will install f5 ACproxy software on Linux host
+#      - Be sure the "vars" below reflect your environment.
+#      - When using a different version of ACproxy code, edit both the
+#        ACproxy_code and ACproxy_start variables following the syntax below.
+# 
+
+- name: Creating a docker system running two instances of ACproxy
+  hosts: 10.0.0.180
+  sudo: yes
+  connection: local
+  gather_facts: no
+  vars:
+    appliance: "10.0.0.180"
+    setup_user: "acproxy"
+    setup_pass: "acproxy"
+    ACproxy_code: "f5-acproxy-1.0.0-build.44.tgz"
+    ACproxy_start: "acproxy:1.0.0-build.44"
+
+  tasks:
+   - name: Installing Docker on Linux host
+     raw: sudo apt-get install docker-engine --assume-yes
+
+   - name: Waiting for Docker to install
+     wait_for:
+       timeout: 20
+
+   - name: Loading AC_proxy
+     raw: sudo docker load -i "{{ACproxy_code}}"
+
+   - name: Waiting for AC_proxy to load
+     wait_for:
+       timeout: 10
+
+   - name: Firing up first instance of ACproxy at port 9001
+     raw: sudo docker run -d -e adminPort=9001 --restart=always --net=host -e proxyName=Proxy1 -it -v /app/proxy/log -v /app/proxy/config f5/"{{ACproxy_start}}"
+
+   - name: Firing up second instance of ACproxy at port 9002
+     raw: sudo docker run -d -e adminPort=9002 --restart=always --net=host -e proxyName=Proxy2 -it -v /app/proxy/log -v /app/proxy/config f5/"{{ACproxy_start}}"
+

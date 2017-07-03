@@ -1,0 +1,45 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will perform the steps to configure
+#      ACProxy on a linux machine in the cloud
+#      A deployment guide can be found at https://github.com/mlowcher61
+#      The steps are as follows:
+#      - Spin up an instance of Linux Ubuntu in your cloud.
+#      - Perform steps neccessary to have Ansible ssh to the linux host
+#      - Verify that the linux host can access the internet
+#      - Put ACproxy code into your working directory in Ansible host (~/ansible/playbooks)
+#      - After running this part1 playbook, go to linux host and run 
+#        "sudo apt-get update" then run the part2 playbook.
+#      - There is a known bug that prevents Ansible from running apt-get update
+#        When this bug is fixed, acproxy_part1 and 2 can be combined 
+
+- name: Creating a docker system running two instances of ACproxy
+  hosts: 10.0.0.180
+  sudo: yes
+  connection: local
+  gather_facts: no
+  vars:
+    appliance: "10.0.0.180"
+    setup_user: "acproxy"
+    setup_pass: "acproxy"
+    ACproxy_code: "f5-acproxy-1.0.0-build.44.tgz"
+
+  tasks:
+   - name: Installing software common properties
+     raw: sudo apt-get install software-properties-common --assume-yes
+
+   - name: Pull down docker key
+     raw: sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+
+   - name: Copying docker.list file to linux host
+     copy: src=~/ansible/playbooks/docker.list dest=/etc/apt/sources.list.d/
+
+   - name: Copying F5 AC_proxy software to linux host
+#    This next one requires specifying the path as it will need sudo to complete
+     copy: src=/home/lowcher/ansible/playbooks/f5-acproxy-1.0.0-build.44.tgz dest=/home/acproxy/ mode=0755
+
