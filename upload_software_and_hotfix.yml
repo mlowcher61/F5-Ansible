@@ -8,6 +8,7 @@
 #      description: This playbook will upload the specified software and
 #      hotfix to the specified host.
 #      Edit the attributes accordingly.
+#      Requires Ansible v2.4 or greater.
 
 - name: Upload base image and hotfix to host
   hosts: "10.0.0.174"

@@ -26,18 +26,25 @@
 # 
 
 - name: Creating a docker system running two instances of ACproxy
-  hosts: 10.0.0.180
+  hosts: acproxy
   sudo: yes
   connection: local
   gather_facts: no
   vars:
-    appliance: "10.0.0.180"
+    appliance: "acproxy"
     setup_user: "acproxy"
     setup_pass: "acproxy"
     ACproxy_code: "f5-acproxy-1.0.0-build.44.tgz"
     ACproxy_start: "acproxy:1.0.0-build.44"
 
   tasks:
+
+   - name: Copying docker.list file to linux host
+     copy: src=~/ansible/playbooks/docker.list dest=/etc/apt/sources.list.d/
+
+   - name: Copying F5 AC_proxy software to linux host
+     copy: src=~/ansible/playbooks/f5-acproxy-1.0.0-build.44.tgz dest=/home/ubuntu mode=755
+
    - name: Installing Docker on Linux host
      raw: sudo apt-get install docker-engine --assume-yes
 

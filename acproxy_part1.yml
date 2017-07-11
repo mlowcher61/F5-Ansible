@@ -19,19 +19,17 @@
 #        When this bug is fixed, acproxy_part1 and 2 can be combined 
 
 - name: Creating a docker system running two instances of ACproxy
-  hosts: 10.0.0.180
+  hosts: acproxy
   sudo: yes
   connection: local
   gather_facts: no
   vars:
-    appliance: "10.0.0.180"
+    appliance: "acproxy"
     setup_user: "acproxy"
     setup_pass: "acproxy"
     ACproxy_code: "f5-acproxy-1.0.0-build.44.tgz"
 
   tasks:
-   - name: Installing software common properties
-     raw: sudo apt-get install software-properties-common --assume-yes
 
    - name: Pull down docker key
      raw: sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
