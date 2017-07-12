@@ -1,5 +1,5 @@
 ---
-  - hosts: loadbalancer
+  - hosts: loadbalancer[3]
     tasks:
       - name: Restore configuration to factory default
         raw: tmsh load sys config default 
