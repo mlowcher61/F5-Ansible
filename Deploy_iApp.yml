@@ -1,0 +1,33 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will deploy
+#      an iApp template  
+
+- name: Connecting...
+  hosts: "10.0.0.160"
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.160"
+    name: "myapp"
+    template: "f5.http"
+
+  tasks: 
+
+   - name: Create HTTP iApp service from iApp template
+     bigip_iapp_service:
+         name: "{{myapp}}"
+         template: "{{template}}"
+         parameters: "{{ lookup('file', 'f5.http.parameters.json') }}"
+         password: "{{setup_pass}}"
+         server: "{{appliance}}"
+         state: "present"
+         user: "{{setup_user}}"
+     delegate_to: localhost

@@ -12,7 +12,7 @@
 #      but are there to show how to add them if desired.
 
 - name: Connecting...
-  hosts: "10.0.0.185"
+  hosts: "10.0.0.160"
   connection: local
 
   tasks: 
@@ -21,6 +21,6 @@
          banner: "enabled"
          banner_text: "{{ lookup('file', '/var/tmp/SSHD-banner.txt') }}"
          password: "admin"
-         server: "10.0.0.185"
+         server: "10.0.0.160"
          user: "admin"
      delegate_to: localhost

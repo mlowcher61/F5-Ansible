@@ -1,0 +1,25 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will fetch 
+#      the ucs file mentioned in the "ucs" variable 
+
+- name: Connecting...
+  hosts: "10.0.0.160"
+  connection: local
+  gather_facts: no
+
+  tasks: 
+   - name: Download a new UCS
+     bigip_ucs_fetch:
+         server: "10.0.0.160"
+         user: "admin"
+         password: "admin"
+         src: "cs_backup.ucs"
+         dest: "/tmp/cs_backup.ucs"
+         validate_certs: "no"
+     delegate_to: localhost

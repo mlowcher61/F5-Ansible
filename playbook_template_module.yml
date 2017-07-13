@@ -1,0 +1,29 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This is a playbook template to be used 
+#      with ansible modules. 
+
+- name: Connecting...
+  hosts: "10.0.0.160"
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.160"
+
+  tasks: 
+
+   - name: Your play description here
+     bigip_desired_module:# The module you are using.
+         server: "{{appliance}}"
+         user: "{{setup_user}}"
+         password: "{{setup_pass}}"
+         state: "present"
+         validate_certs: "no"
+     delegate_to: localhost
