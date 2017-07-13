@@ -23,17 +23,17 @@
     setup_pass: "admin"
     
   tasks:
-  - name: Copy variables from spreadsheet
-    csv_to_facts:
-      src: ./files/clientssl.csv
+   - name: Copy variables from spreadsheet
+     csv_to_facts:
+     src: ./files/clientssl.csv
 
-  - name: Create clientssl profiles
-    icontrol_install_config: 
-      method: "_post_"
-      uri: "/mgmt/tm/ltm/profile/client-ssl"
-      body: '{"name":"{{item.profile_name}}","cert":"{{item.cert_name}}","key":"{{item.key_name}}"}'
-      host: "{{item.appliance}}"
-      username: "{{setup_user}}"
-      password: "{{setup_pass}}"
-    with_items: "{{spreadsheet}}" 
+   - name: Create clientssl profiles
+     icontrol_install_config: 
+       method: "_post_"
+       uri: "/mgmt/tm/ltm/profile/client-ssl"
+       body: '{"name":"{{item.profile_name}}","cert":"{{item.cert_name}}","key":"{{item.key_name}}"}'
+       host: "{{item.appliance}}"
+       username: "{{setup_user}}"
+       password: "{{setup_pass}}"
+     with_items: "{{spreadsheet}}" 
 

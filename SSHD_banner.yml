@@ -11,20 +11,16 @@
 #      the monitor. The "send" and "receive" attributes have been commented out
 #      but are there to show how to add them if desired.
 
-- name: Create TCP Monitor
+- name: Connecting...
   hosts: "10.0.0.185"
   connection: local
 
   tasks: 
-   - name: Creating the TCP monitor
-     bigip_monitor_tcp:
-         state: "present"
+   - name: Set the banner for the SSHD service from a file
+     bigip_device_sshd:
+         banner: "enabled"
+         banner_text: "{{ lookup('file', '/var/tmp/SSHD-banner.txt') }}"
+         password: "admin"
          server: "10.0.0.185"
          user: "admin"
-         password: "admin"
-         name: "ansible_tcp_monitor"
-         type: "tcp"
-         # send: "tcp string to send"
-         #receive: "tcp string to receive"
-         validate_certs: "no"
      delegate_to: localhost

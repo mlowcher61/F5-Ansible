@@ -17,16 +17,14 @@
   vars:
     setup_user: "admin"
     setup_pass: "admin"
-    appliance: "10.0.0.185"
-    hostname: "big13.home.com"
     
   tasks:
   - name: Change Local Device Name A
     icontrol_install_config: 
       method: "_post_"
       uri: "/mgmt/tm/cm/device"
-      body: '{"command":"mv","name":"bigip1","target":"{{hostname}}"}'
-      host: "{{appliance}}"
+      body: '{"command":"mv","name":"bigip1","target":"big13.home.com"}'
+      host: "10.0.0.185"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
     

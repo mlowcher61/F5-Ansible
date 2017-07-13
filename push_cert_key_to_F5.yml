@@ -11,14 +11,14 @@
 #      
 
 - name: Push PEM Certificate and key
-  hosts: "10.0.0.174"
+  hosts: "10.0.0.185"
   connection: local
 
   tasks: 
    - name: Pushing the certificate and key to the F5
      bigip_ssl_certificate:
          state: "present"
-         server: "10.0.0.174"
+         server: "10.0.0.185"
          user: "admin"
          password: "admin"
          name: "lowcher"
