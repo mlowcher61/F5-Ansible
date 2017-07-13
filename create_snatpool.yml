@@ -28,7 +28,6 @@
          password: "{{setup_pass}}"
          state: "present"
          name: "{{snatpool}}"
-         state: "present"
          members:
              - 10.10.10.10
              - 10.10.10.11
