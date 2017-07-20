@@ -1,0 +1,29 @@
+#!/usr/bin/ansible-playbook 
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a child http profile with the default http profile as the parent.
+#      Edit the "vars" below accordingly.
+
+- name: F5 Setup
+  hosts: azure
+  connection: local
+  gather_facts: no
+ 
+  tasks:
+  - name: Create a security group in Azure with RDP access
+    azure_rm_securitygroup:
+      resource_group: MarksResourceGroup
+      name: secgroup001
+      rules:
+        - name: RDP
+          protocol: Tcp
+          destination_port_range: 3389
+          access: allow
+          priority 101
+          direction: Inbound
+          validate_certs: "no"
+      delegate_to: localhost

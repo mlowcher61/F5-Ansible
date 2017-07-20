@@ -12,52 +12,47 @@
 #      - Spin up an instance of Linux Ubuntu in your cloud.
 #      - Perform steps neccessary to have Ansible ssh to the linux host
 #      - Verify that the linux host can access the internet
-#      - Put ACproxy code into your working directory in Ansible host
-#        as well as the docker.list file (~/ansible/playbooks)
-#      - Run the "acproxy_part1" playbook before this one and 
-#        run "sudo apt-get update" on the linux host prior to running
-#        this playbook. There is currently a known bug with apt that
-#        does not allow Ansible to run apt-get update from a playbook.
-#      - This playbook will Install Docker on the Linux host
-#      - This playbook will install f5 ACproxy software on Linux host
-#      - Be sure the "vars" below reflect your environment.
-#      - When using a different version of ACproxy code, edit both the
-#        ACproxy_code and ACproxy_start variables following the syntax below.
-# 
+#      - Put ACproxy code into your working directory in Ansible host (~/ansible/playbooks)
+#      - Put docker.list file in the same directory.
+#       (See Ansible Orchestration for App Connector)
 
 - name: Creating a docker system running two instances of ACproxy
-  hosts: acproxy
+  hosts: acproxy[0]
   sudo: yes
   connection: local
   gather_facts: no
   vars:
-    appliance: "acproxy"
-    setup_user: "acproxy"
+    appliance: "acproxy[0]"
+    setup_user: "ubuntu"
     setup_pass: "acproxy"
     ACproxy_code: "f5-acproxy-1.0.0-build.44.tgz"
     ACproxy_start: "acproxy:1.0.0-build.44"
 
   tasks:
 
+   - name: Updating apt...
+     raw: sudo apt-get update
+
+   - name: Pull down docker key
+     raw: sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+
    - name: Copying docker.list file to linux host
      copy: src=~/ansible/playbooks/docker.list dest=/etc/apt/sources.list.d/
+
+#   - name: Copying F5 AC_proxy software to linux host
+#     copy: src=/home/lowcher/ansible/playbooks/f5-acproxy-1.0.0-build.44.tgz dest=/home/acproxy/ mode=0755
 
    - name: Copying F5 AC_proxy software to linux host
      copy: src=~/ansible/playbooks/f5-acproxy-1.0.0-build.44.tgz dest=/home/ubuntu mode=755
 
-   - name: Installing Docker on Linux host
-     raw: sudo apt-get install docker-engine --assume-yes
+   - name: Updating apt...
+     raw: sudo apt-get update
 
-   - name: Waiting for Docker to install
-     wait_for:
-       timeout: 20
+   - name: Installing Docker on Linux host...
+     raw: sudo apt-get install docker-engine --assume-yes
 
    - name: Loading AC_proxy
      raw: sudo docker load -i "{{ACproxy_code}}"
-
-   - name: Waiting for AC_proxy to load
-     wait_for:
-       timeout: 10
 
    - name: Firing up first instance of ACproxy at port 9001
      raw: sudo docker run -d -e adminPort=9001 --restart=always --net=host -e proxyName=Proxy1 -it -v /app/proxy/log -v /app/proxy/config f5/"{{ACproxy_start}}"
