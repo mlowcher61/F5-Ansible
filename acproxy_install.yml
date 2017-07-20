@@ -39,9 +39,6 @@
    - name: Copying docker.list file to linux host
      copy: src=~/ansible/playbooks/docker.list dest=/etc/apt/sources.list.d/
 
-#   - name: Copying F5 AC_proxy software to linux host
-#     copy: src=/home/lowcher/ansible/playbooks/f5-acproxy-1.0.0-build.44.tgz dest=/home/acproxy/ mode=0755
-
    - name: Copying F5 AC_proxy software to linux host
      copy: src=~/ansible/playbooks/f5-acproxy-1.0.0-build.44.tgz dest=/home/ubuntu mode=755
 
