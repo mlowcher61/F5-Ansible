@@ -1,0 +1,15 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will delete all connections associated 
+#      with a specific client side ip address. 
+
+   - hosts: loadbalancer[0]
+
+     tasks:
+       - name: Deleting all connections associated with one client ip address
+         raw: tmsh delete sys connection cs-client-addr 30.20.10.5     

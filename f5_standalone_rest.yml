@@ -1,15 +1,16 @@
 #!/usr/bin/ansible-playbook
 ---
+      
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
 #
-#      Copyright (c) 2016 World Wide Technology, Inc. 
-#      All rights reserved. 
-#
-#      author: Mark Wall  World Wide Technology
-#      short_description: Automation of F5 Initial Setup 
-#      description: Importing configuration via CSV files to automate initial configuration of F5.
-#                   This playbook will read a CSV file and perform initial F5 setup steps leaving a 
-#                   running active/standby pair.
-#
+#      author: Mark Lowcher F5 Networks
+#      short_description: Run this playbook after licensing
+#      and provisioning to create a base configuration for 
+#      a standalone F5. This will change the name of the device
+#      and create vlans, self ips, DNS, NTP and Syslog destination.
+#      The variables are pulled from a csv file.
+
 
 - name: F5 Setup
   hosts: localhost

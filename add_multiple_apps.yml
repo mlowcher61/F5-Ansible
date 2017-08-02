@@ -6,7 +6,9 @@
 #
 #      author: Mark Lowcher F5 Networks
 #      short_description: Add an application to a running F5 BIG-IP 
-#      description: This playbook will read a CSV file and create a virtual server and all it's dependencies. ie... pool, profiles monitors. Filling in additional rows in the spreadsheet will create additional virtual servers.
+#      description: This playbook will read a CSV file and create a virtual server 
+#      and all it's dependencies. ie... pool, profiles monitors. Filling in additional 
+#      rows in the spreadsheet will create additional virtual servers.
 #
 
 - name: F5 Setup
