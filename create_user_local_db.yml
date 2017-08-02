@@ -1,0 +1,31 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 World Wide Technology, Inc. 
+#      All rights reserved. 
+#
+#      author: Mark Wall  World Wide Technology
+#      short_description: Automation of F5 Initial Setup 
+#      description: Importing configuration via CSV files to automate initial configuration of F5.
+#                   This playbook will read a CSV file and perform initial F5 setup steps leaving a 
+#                   running active/standby pair.
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.157"
+    
+  tasks:
+  - name: Creating a user... 
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/util/bash"
+      body: {"command":"run","utilCmdArgs":"-c 'ldutil --add --uname=\"test.user\" --instance=\"/Common/local_user_db\": --password=\"kenyon99\" --change_passwd=\"0\" first_name=\"Test\" --last_name=\"User\" --email=\"test.user.f5.com\" --user_groups=\"\" --login_failures=\"0\" --locked_out=\"0\"'"}
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"

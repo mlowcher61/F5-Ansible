@@ -10,14 +10,14 @@
 #      monitor and to "absent" to delete the monitor.
 
 - name: Create HTTP Monitor
-  hosts: 10.0.0.160
+  hosts: 10.0.0.174
   connection: local
 
   tasks: 
    - name: Creating the HTTP monitor
      bigip_monitor_http:
          state: "absent"
-         server: "10.0.0.160"
+         server: "10.0.0.174"
          user: "admin"
          password: "admin"
          name: "ansible_http_monitor2"

@@ -1,0 +1,147 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks. 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks 
+#      description: This playbook will create firewall rules.
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.157"
+    
+  tasks:
+  - name: Get facts from CSV file
+    csv_to_facts:
+      src: ./files/firewall.csv
+
+  - name: Creating a firewall rule
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/security/firewall/rule-list/~Common~tester22/rules"
+      body: '{"name":"{{item.name}}","fullPath":"{{item.name}}","place-after":"{{item.placeAfter}}","ipProtocol":"tcp","log": "no","action":"{{item.action}}","status":"enabled","destination":{"addresses": [{"name":"{{item.dest_ip}}"}],"ports":[{"name":"{{item.ports}}"}]}}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# EXAMPLES OF POSSIBLE ATTRIBUTES
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#[root@mobileiron:Active:Standalone] config # curl -sku admin:admin https://localhost//mgmt/tm/security/firewall/rule-list/~Common~test-firewall-rule/rules/example | jq .items
+#[
+##  {
+#    "propertyDescriptions": {
+#      "action": "Specifies the action that the system takes when a rule is matched.",
+#      "appService": "The application service that the object belongs to.",
+#      "description": "User defined description.",
+#      "destination": {
+#        "addressLists": "Specifies a list of address lists (see security firewall address-list) against which the packet will be compared.",
+#        "addresses": {
+#          "appService": "The application service that the object belongs to.",
+#          "description": "User defined description."
+#        },
+#        "fqdns": {
+#          "appService": "The application service that the object belongs to.",
+#          "description": "User defined description."
+#        },
+#        "geo": {
+#          "appService": "The application service that the object belongs to.",
+#          "description": "User defined description."
+#        },
+#        "portLists": "Specifies a list of port lists (see security firewall port-list) against which the packet will be compared.",
+#        "ports": {
+#          "appService": "",
+#          "description": ""
+#        }
+#      },
+#      "icmp": {
+#        "appService": "",
+#        "description": ""
+#      },
+#      "ipProtocol": "Specifies the IP protocol against which the packet will be compared.",
+#      "irule": "Specifies the name of the iRule which will be triggered if the packet matches this firewall rule.",
+#      "iruleSampleRate": "Specifies the rate at which iRule will be triggered if the packet matches this firewall rule.",
+#      "log": "Specifies whether the packet will be logged if it matches the rule.  Logging must also be enabled in the security log profile global-network configuration. Note that the statistics counter is always incremented when a packet matches a rule.",
+#      "placeAfter": "Specifies that a new rule should be placed after another rule, first or last. If individual rules are being added (as opposed to specifying replace-all-with) then place-before or place-after must be specified.",
+#      "placeBefore": "Specifies that a new rule should be placed before another rule, first or last. If individual rules are being added (as opposed to specifying replace-all-with) then place-before or place-after must be specified.",
+#      "schedule": "Specifies a schedule for the rule. See security firewall schedule.  If the rule refers to a rule-list the rule-list will be enabled according to the schedule. When the rule list is enabled, the schedules defined within the rule-list will be honored.",
+#      "servicePolicy": "Specifies the service policy to use.",
+#      "source": {
+#        "addressLists": "Specifies a list of address lists (see security firewall address-list) against which the packet will be compared.",
+#        "addresses": {
+#          "appService": "The application service that the object belongs to.",
+#          "description": "User defined description."
+#        },
+#        "fqdns": {
+#          "appService": "The application service that the object belongs to.",
+#          "description": "User defined description."
+#        },
+#        "geo": {
+#          "appService": "The application service that the object belongs to.",
+#          "description": "User defined description."
+#        },
+#        "identity": {
+#          "userGroups": {
+#            "description": ""
+#          },
+#          "userLists": "",
+#          "users": {
+#            "description": ""
+#          }
+#        },
+#        "portLists": "Specifies a list of port lists (see security firewall port-list) against which the packet will be compared.",
+#        "ports": {
+#          "appService": "",
+#          "description": ""
+#        },
+#        "vlans": "Specifies a list of vlans, vlan groups and tunnels against which the packet will be compared."
+#      },
+#      "status": "Specifies whether the rule is enabled, disabled or scheduled. A rule that is enabled is always checked. A rule that is disabled is never checked. A rule that is scheduled is checked according to the corresponding schedule configuration. A rule that is scheduled must have an associated schedule configuration."
+#    },
+#    "action": "none",
+#    "appService": "",
+#    "description": "",
+#    "destination": {
+#      "addressLists": [],
+#      "addresses": [],
+#      "fqdns": [],
+#      "geo": [],
+#      "portLists": [],
+#      "ports": []
+#    },
+#    "icmp": [],
+#    "ipProtocol": "any",
+#    "irule": "",
+#    "iruleSampleRate": 1,
+#    "log": "no",
+#    "placeAfter": "",
+#    "placeBefore": "",
+#    "schedule": "",
+#    "servicePolicy": "",
+#    "source": {
+#      "addressLists": [],
+#      "addresses": [],
+#      "fqdns": [],
+#      "geo": [],
+#      "identity": {
+#        "userGroups": [],
+#        "userLists": [],
+#        "users": []
+#      },
+#      "portLists": [],
+#      "ports": [],
+#      "vlans": []
+#    },
+#    "status": "enabled"
+#  }
+#]
+

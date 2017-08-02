@@ -45,7 +45,7 @@
     icontrol_install_config:
       method: PATCH
       uri: "/mgmt/tm/sys/globalSettings"
-      body: '{"gui-security-banner":"enabled","gui-security-banner-text":"**** WARNING ****  This system is restricted solely to F5 authorized users for legitimate purposes only."}'
+      body: '{"gui-security-banner":"enabled","gui-security-banner-text":"**** WARNING ****  This system is restricted solely to F5 authorized users for legitimate purposes only. Stay out!"}'
       host: "{{appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"

@@ -17,16 +17,16 @@
 #       (See Ansible Orchestration for App Connector)
 
 - name: Creating a docker system running two instances of ACproxy
-  hosts: acproxy[0]
+  hosts: acproxy
   sudo: yes
   connection: local
   gather_facts: no
   vars:
-    appliance: "acproxy[0]"
+    appliance: "acproxy"
     setup_user: "ubuntu"
-    setup_pass: "acproxy"
-    ACproxy_code: "f5-acproxy-1.0.0-build.44.tgz"
-    ACproxy_start: "acproxy:1.0.0-build.44"
+    setup_pass: "Kenkar@06"
+    ACproxy_code: "f5-acproxy-1.0.1-build.52.tgz"
+    ACproxy_start: "acproxy:1.0.1-build.52"
 
   tasks:
 
@@ -40,7 +40,7 @@
      copy: src=~/ansible/playbooks/docker.list dest=/etc/apt/sources.list.d/
 
    - name: Copying F5 AC_proxy software to linux host
-     copy: src=~/ansible/playbooks/f5-acproxy-1.0.0-build.44.tgz dest=/home/ubuntu mode=755
+     copy: src=~/ansible/playbooks/f5-acproxy-1.0.1-build.52.tgz dest=/home/ubuntu mode=755
 
    - name: Updating apt...
      raw: sudo apt-get update
@@ -52,8 +52,8 @@
      raw: sudo docker load -i "{{ACproxy_code}}"
 
    - name: Firing up first instance of ACproxy at port 9001
-     raw: sudo docker run -d -e adminPort=9001 --restart=always --net=host -e proxyName=Proxy1 -it -v /app/proxy/log -v /app/proxy/config f5/"{{ACproxy_start}}"
+     raw: sudo docker run -d -e adminPort=9001 --restart=always --net=host -e proxyName=Proxy1 -e user="{{setup_user}}" -e passwd="{{setup_pass}}" -e publish=true -it -v /home/ubuntu/cloud_vendors/aws:/app/proxy/vendors/aws -v /app/proxy/log -v /app/proxy/config f5/"{{ACproxy_start}}"
 
    - name: Firing up second instance of ACproxy at port 9002
-     raw: sudo docker run -d -e adminPort=9002 --restart=always --net=host -e proxyName=Proxy2 -it -v /app/proxy/log -v /app/proxy/config f5/"{{ACproxy_start}}"
+     raw: sudo docker run -d -e adminPort=9002 --restart=always --net=host -e proxyName=Proxy2 -e user="{{setup_user}}" -e passwd="{{setup_pass}}" -e publish=true-it -v /app/proxy/log -v /app/proxy/config f5/"{{ACproxy_start}}"
 
