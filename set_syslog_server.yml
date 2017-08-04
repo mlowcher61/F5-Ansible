@@ -1,0 +1,33 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will set the DNS
+#      settings. state: "absent" will remove the settings. 
+
+- name: Connecting...
+  hosts: "10.0.0.157"
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    bigip: "10.0.0.157"
+    remote_host: "30.20.10.5"
+    remote_port: "514"
+    local_ip: "20.30.40.5"
+
+  tasks:
+    - name: Add remote syslog server
+      bigip_remote_syslog:
+        user: "{{ setup_user }}"
+        password: "{{ setup_pass }}"
+        server: "{{ bigip }}"
+        remote_host: "{{ remote_host }}" 
+        remote_port: "{{ remote_port }}" 
+        local_ip: "{{ local_ip }}"
+        validate_certs: "no"
+      delegate_to: localhost

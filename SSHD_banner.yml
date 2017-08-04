@@ -5,22 +5,32 @@
 #      All rights reserved.
 #
 #      author: Mark Lowcher F5 Networks
-#      description: This playbook will create a child tcp monitor based on the
-#      the parent monitor stated in the "type" attribute. The "state" attribute 
-#      should be set to "present" to create the monitor and to "absent" to delet
-#      the monitor. The "send" and "receive" attributes have been commented out
+#      description: This playbook will set a banner that is presented upon
+#      login. The "inactivity_timeout" can limit the session to X number of seconds. 
+#      "allow" can limit ssh access to specific ips or ip ranges.
+#      EXAMPLE:
+#      ip address such as: 30.20.10.5
+#      ip range such as: 172.27.*.* or 172.27.0.0/255.255.0.0
 #      but are there to show how to add them if desired.
+#      banner: "disabled" will remove the banner.
 
 - name: Connecting...
   hosts: "10.0.0.166"
   connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    bigip: "10.0.0.157"`
 
   tasks: 
    - name: Set the banner for the SSHD service from a file
      bigip_device_sshd:
          banner: "enabled"
          banner_text: "{{ lookup('file', '/var/tmp/SSHD-banner.txt') }}"
-         password: "admin"
-         server: "10.0.0.166"
-         user: "admin"
+         inactivity_timeout: "no"
+         allow: "all"
+         server: "{{bigip}}"
+         user: "{{setup_user}}"
+         password: "{{setup_pass}}"
      delegate_to: localhost

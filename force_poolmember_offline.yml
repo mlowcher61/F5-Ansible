@@ -1,0 +1,32 @@
+#!/usr/bin/ansible-playbook
+---
+#       Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will force a pool member offline.
+
+- name: Connecting...
+  hosts: "10.0.0.157"
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    pool_name: "mypool"
+    node_host: "10.10.10.10"
+    node_port: "80"
+
+  tasks:
+    - name: Force pool member offline
+      bigip_pool_member:
+          host: "{{ node_host }}"
+          pool: "{{ pool_name }}"
+          port: "{{ node_port }}"
+          user: "{{setup_user}}"
+          password: "{{setup_pass}}"
+          session_state: "disabled"
+          monitor_state: "disabled"
+          state: "present"
+          validate_certs: "no"
+      register: result

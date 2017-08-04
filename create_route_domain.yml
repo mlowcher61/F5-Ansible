@@ -1,0 +1,42 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a route domain
+#      and set the vlans to the route domain. The vlans must 
+#      exist prior to running this playbook.
+
+- name: Connecting...
+  hosts: "10.0.0.157"
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    bigip: "10.0.0.157"
+    route_id: "1234"
+
+  tasks:
+    - name: Create a route domain
+      bigip_routedomain:
+          id: "{{route_id}}"
+          user: "{{setup_user}}"
+          password: "{{setup_pass}}"
+          server: "{{bigip}}"
+          state: "present"
+      delegate_to: localhost
+
+    - name: Set VLANs on the route domain
+      bigip_routedomain:
+          id: "{{route_id}}"
+          user: "{{setup_user}}"
+          password: "{{setup_pass}}"
+          server: "{{bigip}}"
+          state: "present"
+          vlans:
+              - f5_ext
+              - f5_int3
+      delegate_to: localhost

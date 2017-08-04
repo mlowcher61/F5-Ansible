@@ -5,8 +5,8 @@
 #      All rights reserved. 
 #
 #      author: Mark Lowcher F5 Networks
-#      description: This playbook will create a child http profile with the default http profile as the parent.
-#      Edit the "vars" below accordingly.
+#      description: This playbook will spin up a compute 
+#      instance in Azure.
 
 - name: F5 Setup
   hosts: localhost

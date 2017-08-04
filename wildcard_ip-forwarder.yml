@@ -19,7 +19,7 @@
   vars:
     setup_user: "admin"
     setup_pass: "admin"
-    appliance: "10.0.0.160"
+    appliance: "10.0.0.157"
     wild_vip: "wildcard_forwarder"
 
   tasks:
@@ -27,7 +27,7 @@
     icontrol_install_config:
       method: "_post_"
       uri: "/mgmt/tm/ltm/virtual"
-      body: '{"name":"{{wild_vip}}","destination":"0.0.0.0:0","ipforward":"true","sourceAddressTranslation":{"type":"automap"}}'
+      body: '{"name":"{{wild_vip}}","destination":"0.0.0.0:0","ipForward": true,"sourceAddressTranslation":{"type":"automap"}}'
       host: "{{appliance}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"

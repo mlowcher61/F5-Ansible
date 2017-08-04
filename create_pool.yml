@@ -1,0 +1,39 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a pool 
+#      state=present, will create if doesn't exist and will leave it if it does
+#      state=absent will delete if it exist and do nothing if it doesn't.
+#      service_down_action, decides what to do when a node goes down.
+#      possible options are: none, reset, drop or reselect.
+
+- name: Connecting...
+  hosts: 10.0.0.157
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    pool_name: "mypool"
+    bigip: "10.0.0.157"
+
+
+  tasks:
+  tasks:
+    - name: Creating pool
+      bigip_pool:
+          state: "present"
+          lb_method: "least_connection_node_address"
+          service_down_action: "reselect"
+          name: "{{pool_name}}"
+          user: "{{setup_user}}"
+          password: "{{setup_pass}}"
+          server: "{{bigip}}"   
+          monitors:
+              - "tcp"
+          validate_certs: "no"
+      delegate_to: localhost
