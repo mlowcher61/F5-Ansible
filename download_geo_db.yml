@@ -1,0 +1,24 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: NOT WORKING YET
+
+- name: Connecting...
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Downloading the geolocation database
+      get_url:
+          url:://downloads.f5.com/esd/serveDownload.jsp?path=/big-ip/big-ip_v11.x/11.6.0/english/geolocationupdates/&sw=BIG-IP&pro=big-ip_v11.x&ver=11.6.0&container=GeoLocationUpdates&file=ip-geolocation-1.0.1-20170814.269.0.zip
+          dest: /home/lowcher/ansible/playbooks/ip-geolocation-1.0.1-20170814.269.0.zip
+          mode: 0700
+          url_username: 
+          url_password:
+          force_basic_auth: yes
+          validate_certs: "no"
+      delegate_to: localhost

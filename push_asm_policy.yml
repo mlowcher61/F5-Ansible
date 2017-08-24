@@ -20,19 +20,24 @@
   vars:
     setup_user: "admin"
     setup_pass: "admin"
+    bigip: "10.0.0.175"
     
   tasks:
-  - name: Get facts from CSV file
-    csv_to_facts:
-      src: ./files/asm_add_urls.csv
 
-  - name: Adding urls to an ASM policy 
+  - name: Pushing a waf policy to f5 
     icontrol_install_config: 
       method: "_post_"
-      uri: "/mgmt/tm/asm/policies/Kj4IDGAhx7A45myee3brnw/urls"
-      body: '{"protocol":"http","name":"{{item.allowed_url}}"}'
-      host: "{{item.appliance}}"
+      uri: "/mgmt/tm/asm/file-transfer/uploads/linux-test.xml"
+      host: "{{bigip}}"
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
-    with_items: "{{spreadsheet}}"
-    when: item.primary == "yes"
+
+#  - name: Importing the waf policy 
+#    icontrol_install_config:
+#      method: "_post_"
+#      uri: "/mgmt/tm/asm/policies/tasks/import-policy"
+#      body: '{"filename":"linux-test.xml","name":"dummy"}'
+#      host: "{{bigip}}"
+#      username: "{{setup_user}}"
+#      password: "{{setup_pass}}"
+

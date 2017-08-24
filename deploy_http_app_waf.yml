@@ -1,0 +1,53 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will deploy an iApp with L7 services
+#
+
+- hosts: 10.0.0.175
+  gather_facts: false
+
+  vars:
+   server: 10.0.0.175
+   iapp: appsvcs_integration_v2.0.004
+   version: v2.0.004
+   setup_user: admin
+   setup_pass: admin
+
+  tasks:
+
+  #This task will get the iApp template from github(or any other link) and store it in local path specified
+  - name: Get iApp from Github
+    get_url:
+     url: https://github.com/F5Networks/f5-application-services-integration-iApp/releases/download/v2.0.004/appsvcs_integration_v2.0.004.tmpl
+     dest: /var/tmp
+     validate_certs: False
+
+  #Upload the iApp templated downloaded above to the BIG-IP
+  - name: Upload iApp template to BIG-IP
+    bigip_iapp_template:
+      server: "{{server}}"
+      user: "{{setup_user}}"
+      password: "{{setup_pass}}"
+      content: "{{ lookup('file', '/var/tmp/appsvcs_integration_v2.0.004.tmpl') }}"
+      state: "present"
+      validate_certs: False
+    delegate_to: localhost
+
+  #The body of the iApp is passed in as a JSON blob.
+  - name: Deploy iApp
+    bigip_iapp_service:
+      name: "HTTP_VS_With_L7Firewall"
+      template: "appsvcs_integration_v2.0.004"
+      parameters: "{{ lookup('file', '/var/tmp/final_iapp_with_asm.json') }}"
+      server: "{{server}}"
+      user: "{{setup_user}}"
+      password: "{{setup_pass}}"
+      state: "present"
+     #state: "absent"
+ #State "absent" will remove the application 
+    delegate_to: localhost

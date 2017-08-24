@@ -1,0 +1,6 @@
+---
+  - hosts: loadbalancer
+    tasks:
+      - name: Changing permissions to /var/tmp
+        raw: chmod 755 /var/tmp
+

@@ -1,0 +1,110 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2017 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will perform the 
+#      following onboarding operations for a standalone instance.
+#      - License the bigip
+#      - Disable the setup GUI
+#      - Provision desired modules
+#      - Rename the F5 host
+#      - Setup DNS and NTP
+#      - Create vlans
+#      - Create self ips
+#      Edit the DNS and NTP variables down in the play itself
+
+- name: Connecting...	
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+   server: 10.0.0.157
+   regkey: WHDQH-HZNMC-BQCBP-HPBIS-ZWOXMGA
+   setup_user: admin
+   setup_pass: admin
+   hostname: f5-bigip1.xyz.com
+
+  tasks:
+  - name: Licensing the BIG-IP
+    bigip_command:
+     server: "{{ server }}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     commands:
+     - /usr/local/bin/SOAPLicenseClient --interactive  --basekey "{{regkey}}"
+     validate_certs: False
+    delegate_to: localhost
+
+  - name: Disabling the setup GUI
+    bigip_command:
+     server: "{{ server }}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     commands:
+     - show sys version
+     - modify sys global-settings gui-setup disabled
+     validate_certs: False
+    delegate_to: localhost
+
+  - name: Renaming F5 instance
+    bigip_command:
+     server: "{{ server }}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     commands:
+     - modify cm device bigip1 hostname "{{hostname}}"
+     - mv cm device bigip1 "{{hostname}}"
+     validate_certs: False
+    delegate_to: localhost
+
+  - name: Configuring DNS
+    bigip_device_dns:
+     name_servers:
+         - 208.67.222.222
+         - 208.67.220.220
+     search:
+         - localdomain
+         - lab.local
+     user: "{{server}}"
+     password: "{{setup_user}}"
+     validate_certs: "no"
+    delegate_to: localhost
+
+  - name: Configuring NTP
+    bigip_device_ntp:
+     ntp_servers:
+         - 208.67.222.222
+         - 208.67.220.220
+     server: "{{server}}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     validate_certs: "no"
+    delegate_to: localhost
+
+  - name: Configuring vlans
+    bigip_vlan:
+     name: "{{item.vlan}}"
+     server: "{{server}}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     validate_certs: "no"
+    delegate_to: localhost
+    with_items:
+      - name: external
+      - name: internal
+
+  - name: Configuring self-ips
+    bigip_selfip:
+     name: "{{item.self}}"
+     server: "{{server}}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     validate_certs: "no"
+    delegate_to: localhost
+    with_items:
+      - name: external_self
+      - name: internal_self
+

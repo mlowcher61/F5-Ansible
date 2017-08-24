@@ -12,5 +12,5 @@
    - hosts: loadbalancer
 
      tasks:
-       - name: push jq
-         copy: src=/home/lowcher/ansible/playbooks/jq dest=/config/ mode=755      
+       - name: push irules
+         copy: src=/home/lowcher/app_svc_L4-7/f5-app-srv-iapp-2.0.004/bundled/irules/ dest=/config/ mode=755      

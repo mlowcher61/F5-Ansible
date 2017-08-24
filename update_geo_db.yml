@@ -10,7 +10,8 @@
 #      placed in the appropriate directories within the Ansible system.
 #      Make sure to edit the src= path below accordingly.
 #      This file calls the hosts "loadbalancer" Make sure that you have defined 
-#      this in your /etc/ansible/hosts file
+#      this in your /etc/ansible/hosts file. You can update as many devices at
+#      once as you wish.
 #      Example [loadbalancer]
 #               10.0.0.100
 #               10.0.0.101

@@ -14,4 +14,4 @@
 
      tasks:
        - name: push public key
-         copy: src=/home/lowcher/.ssh/id_rsa.pub dest=/root/.ssh/authorized_keys        
+         copy: src=/home/lowcher/ansible/playbooks/mykeys.pub dest=/root/.ssh/authorized_keys        

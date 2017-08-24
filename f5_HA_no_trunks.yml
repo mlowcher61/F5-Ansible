@@ -22,7 +22,7 @@
   tasks:
   - name: Get facts from CSV file
     csv_to_facts:
-      src: ./files/f5_initial_setup_no_trunk.csv
+      src: ./files/f5_HA_no_trunks.csv
 
   - name: Change Local Device Name A
     icontrol_install_config: 
@@ -33,8 +33,9 @@
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
     with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
     
-  - name: Change Hostname for Device A
+  - name: Disable GUI on Device A
     icontrol_install_config: 
       uri: "/mgmt/tm/sys/globalSettings"
       method: PATCH
@@ -44,8 +45,19 @@
       password: "{{setup_pass}}"
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
+
+  - name: Change Local Device Name B 
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/cm/device"
+      body: '{"command":"mv","name":"bigip1","target":"{{item.hostname}}"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "no"
     
-  - name: Change Hostname for Device B
+  - name: Disable GUI on Device B
     icontrol_install_config: 
       uri: "/mgmt/tm/sys/globalSettings"
       method: PATCH
@@ -155,15 +167,15 @@
       password: "{{setup_pass}}"
     with_items: "{{spreadsheet}}"
 
-  - name: Create DNS Servers
-    icontrol_install_config: 
-      uri: "/mgmt/tm/sys/dns"
-      method: PATCH
-      body: '{"nameServers":["{{item.dns_server_1}}","{{item.dns_server_2}}"],"search":["{{item.domain}}"]}'
-      host: "{{item.appliance}}"
-      username: "{{setup_user}}"
-      password: "{{setup_pass}}"
-    with_items: "{{spreadsheet}}"
+#  - name: Create DNS Servers
+#    icontrol_install_config: 
+#      uri: "/mgmt/tm/sys/dns"
+#      method: PATCH
+#      body: '{"nameServers":["{{item.dns_server_1}}","{{item.dns_server_2}}"],"search":["{{item.domain}}"]}'
+#      host: "{{item.appliance}}"
+#      username: "{{setup_user}}"
+#      password: "{{setup_pass}}"
+#    with_items: "{{spreadsheet}}"
     
   - name: Create NTP Servers
     icontrol_install_config: 

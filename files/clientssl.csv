@@ -1,2 +1,2 @@
 appliance,primary,profile_name,cert_name,key_name
-10.0.0.160,yes,lowcher-clientssl,/Common/lowcher.crt,/Common/lowcher.key
+10.0.0.175,yes,lowcher_clientssl,/Common/lowcher,/Common/lowcher

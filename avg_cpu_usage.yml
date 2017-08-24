@@ -5,10 +5,7 @@
 #      All rights reserved. 
 #
 #      author: Mark Wall  World Wide Technology
-#      short_description: Automation of F5 Initial Setup 
-#      description: Importing configuration via CSV files to automate initial configuration of F5.
-#                   This playbook will read a CSV file and perform initial F5 setup steps leaving a 
-#                   running active/standby pair.
+#      short_description: Running bash commands from within Ansible
 #
 
 - name: F5 Setup

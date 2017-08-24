@@ -1,0 +1,58 @@
+#This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
+#
+#   - Comments begin with the '#' character
+#   - Blank lines are ignored
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+
+# Ex 1: Ungrouped hosts, specify before any group headers.
+
+## green.example.com
+## blue.example.com
+## 192.168.100.1
+## 192.168.100.10
+
+# Ex 2: A collection of hosts belonging to the 'webservers' group
+
+## [webservers]
+## alpha.example.org
+## beta.example.org
+## 192.168.1.100
+## 192.168.1.110
+
+# If you have multiple hosts following a pattern you can specify
+# them like this:
+
+## www[001:006].example.com
+
+# Ex 3: A collection of database servers in the 'dbservers' group
+
+## [dbservers]
+## 
+## db01.intranet.mydomain.net
+## db02.intranet.mydomain.net
+## 10.25.1.56
+## 10.25.1.57
+
+# Here's another example of host ranges, this time there are no
+# leading 0s:
+
+## db-[99:101]-node.example.com
+[loadbalancer]
+10.0.0.175 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=default
+10.0.0.176 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=default
+10.0.0.186 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=default
+10.0.0.187 ansible_connection=ssh ansible_ssh_user=admin ansible_ssh_private_key_file=/etc/ansible/my_private_key.pem
+[ansible]
+10.0.0.161 ansible_connection=local
+[Big-IQ]
+10.0.0.167 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass=default
+[ubuntu]
+1.1.1.1 ansible_connection=ssh ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/etc/ansible/azure 
+[acproxy]
+34.213.150.79 ansible_connection=ssh ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/etc/ansible/kenkar_acproxy.pem
+#52.171.57.122 AZURE_CLIENT_ID=68b0697f-166c-43cb-b451-8d4ead772a34 AZURE_SECRET=nSlsHAnUXgOstGm6ljy18pvuOhC3AoecO6kS/4GtQw8== AZURE_SUBSCRIPTION_ID=c7fcfde2-b020-439f-98e7-05818f6e2c2e AZURE_TENANT=7691662e-9fa6-477d-adc5-588b444775c0 
+

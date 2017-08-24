@@ -1,0 +1,39 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      --NOTICE-- This is currently not working due to a bug. It will be fixed
+#      in Ansible v2.4.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a clientssl profiles. It takes the clientssl
+#      profile name, certificate and key from the .csv located in ./files/
+#      You must first use the push_cert_key playbook to push the PEM certificate and key
+#      files to the desired F5 first. You can create multiple clientssl profiles at once
+#      by creating a new row in the .csv file and setting the "primary" column to "yes" 
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    
+  tasks:
+   - name: Copy variables from spreadsheet
+     csv_to_facts:
+       src: ./files/clientssl.csv
+
+   - name: Create clientssl profiles
+     icontrol_install_config: 
+       method: "_post_"
+       uri: "/mgmt/tm/ltm/profile/client-ssl"
+       body: '{"name":"{{item.profile_name}}","cert":"{{item.cert_name}}","key":"{{item.key_name}}"}'
+       host: "{{item.appliance}}"
+       username: "{{setup_user}}"
+       password: "{{setup_pass}}"
+     with_items: "{{spreadsheet}}" 
+
