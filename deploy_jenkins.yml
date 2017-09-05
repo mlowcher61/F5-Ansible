@@ -1,0 +1,99 @@
+#!/usr/bin/ansible-playbook
+---
+      
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      short_description: Deploy a Jenkins server
+
+
+- hosts: jenkins 
+
+  vars:
+   packages:
+    - nginx
+    - git-core
+    - gcc
+    - default-jdk
+    - openjdk-7-jdk
+    - git
+    - maven
+    
+  tasks:
+
+  - name: Installing {{ item }}
+    apt: pkg={{ item }} state=present
+    become: yes
+    with_items: "{{packages}}"
+
+  - name: Installing java prerequisites
+    apt: name=python-software-properties
+    become: yes
+
+  - name: Adding java repo
+    apt_repository: repo='ppa:webup8team/java'
+    become: yes
+
+  - name: Accepting Oracle license
+    debconf: name=oracle-java8-installer question=shared/accepted-oracle-license-v1-1 vtype=select value=true
+    become: yes
+
+  - name: Installing Java 8
+    apt: name=oracle-java8-installer force=yes
+    become: yes
+
+  - name: Updating APT package cache
+    become: yes
+    action: apt update_cache=yes
+
+  - name: Installing Maven
+    become: yes
+    apt: pkg=maven state=present
+
+  - name: Downloading Jenkins
+    shell: wget -q -0 - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
+    become: yes
+
+  - name: Updating Jenkins sources list
+    shell: sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+    become: yes
+
+  - name: Updating APT package cache
+    become: yes
+    action: apt update_cache=yes
+
+  - name: Installing Jenkins
+    apt:
+      name: jenkins
+      state: present
+      install_recommends: yes
+    become: true
+
+  - copy:
+     src: /home/vagrant/auto_config.xml
+     dest: /var/lib/jenkins/config.xml
+     owner: jenkins
+     group: jenkins
+     mode: 0777
+
+  - copy:
+     src: /home/vagrant/auto_job_run.xml
+     dest: /home/vagrant/auto_job_run.xml
+     mode: 0777
+
+  - wait_for:
+     host: 192.168.1.200
+     port: 8080
+     delay: 30
+
+  - name: Get client jar file
+    action: shell wget http://192.168.1.200:8080/jnlpJars/jenkins-cli.jar
+    args:
+      creates: /home/vagrant/jenkins-cli.jar 
+
+  - name: Create job
+    action: shell java -jar jenkins-cli.jar -s http://192.168.1.200:8080/ create-job JOB < auto_job_run.xml
+    
+  - name: Final job
+    action: shell java -jar /home/vagrant/jenkins-cli.jar -s http://192.168.1.200:8080/ build JOB

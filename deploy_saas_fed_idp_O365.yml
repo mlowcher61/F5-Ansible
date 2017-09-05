@@ -1,0 +1,50 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will deploy an iApp with L7 services
+#      Rather than "test" as the ending of the template name
+#      you should change it to identify the customer. Use the syntax below
+#      to find and replace.
+#      :%s/WORD-To-Find-HERE/Replace-Word-Here/g
+#      Edit the .json file. Look for 20.20.20 and change the ip address to the 
+#      desired VIP address. Look for vs_Name and change the vip name
+#
+
+- hosts: 10.0.0.180
+  gather_facts: false
+
+  vars:
+   server: 10.0.0.180
+   setup_user: admin
+   setup_pass: admin
+
+  tasks:
+
+  #Upload the iApp templated downloaded above to the BIG-IP
+  - name: Upload iApp template to BIG-IP
+    bigip_iapp_template:
+      server: "{{server}}"
+      user: "{{setup_user}}"
+      password: "{{setup_pass}}"
+      content: "{{ lookup('file', '/var/tmp/f5.saas_idp.v1.0.1rc1.tmpl') }}"
+      state: "present"
+      validate_certs: False
+    delegate_to: localhost
+
+  #The body of the iApp is passed in as a JSON blob.
+  - name: Deploy iApp
+    bigip_iapp_service:
+      name: "saas_fed_idp_O365"
+      template: "f5.saas_idp.v1.0.1rc1"
+      parameters: "{{ lookup('file', '/var/tmp/saas_fed_idp_O365.json') }}"
+      server: "{{server}}"
+      user: "{{setup_user}}"
+      password: "{{setup_pass}}"
+      state: "present"
+#      state: "absent"
+#State "absent" will remove the application 
+    delegate_to: localhost

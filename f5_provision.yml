@@ -5,79 +5,36 @@
 #      All rights reserved.
 #
 #      author: Mark Lowcher F5 Networks
-#      description: This playbook will set the resource provisioning. 
-#      Edit the value of "level" accordingly
+#      description: This playbook will provision the selected module.
 
-
-- name: F5 Setup
+- name: Provision module
   hosts: localhost
   connection: local
-  gather_facts: no
+  gather_facts: false
   vars:
-    setup_user: "admin"
-    setup_pass: "admin"
-    appliance: "10.0.0.166"
+   server1: 10.0.0.180
+   server2: 10.0.0.181
+   module1: asm
+   module2: apm
+   setup_user: admin
+   setup_pass: admin
 
-  tasks:
-  - name: Assign the LTM provisioning
-    icontrol_install_config:
-      method: PATCH
-      uri: "/mgmt/tm/sys/provision/ltm"
-      body: '{"level":"nominal"}'
-      host: "{{appliance}}"
-      username: "{{setup_user}}"
-      password: "{{setup_pass}}"
+   
 
-  - name: Assign the GTM provisioning
-    icontrol_install_config:
-      method: PATCH
-      uri: "/mgmt/tm/sys/provision/gtm"
-      body: '{"level":"none"}'
-      host: "{{appliance}}"
-      username: "{{setup_user}}"
+  tasks: 
+   - name: Provisioning module
+     bigip_provision:
+      module: "{{ item.module }}"
+      level: "nominal"
+      server: "{{ item.server }}"
+      user: "{{setup_user}}"
       password: "{{setup_pass}}"
-
-  - name: Assign the APM provisioning
-    icontrol_install_config:
-      method: PATCH
-      uri: "/mgmt/tm/sys/provision/apm"
-      body: '{"level":"nominal"}'
-      host: "{{appliance}}"
-      username: "{{setup_user}}"
-      password: "{{setup_pass}}"
-
-  - name: Assign the ASM provisioning
-    icontrol_install_config:
-      method: PATCH
-      uri: "/mgmt/tm/sys/provision/asm"
-      body: '{"level":"none"}'
-      host: "{{appliance}}"
-      username: "{{setup_user}}"
-      password: "{{setup_pass}}"
-
-  - name: Assign the AFM provisioning
-    icontrol_install_config:
-      method: PATCH
-      uri: "/mgmt/tm/sys/provision/afm"
-      body: '{"level":"none"}'
-      host: "{{appliance}}"
-      username: "{{setup_user}}"
-      password: "{{setup_pass}}"
-
-  - name: Assign the AVR provisioning
-    icontrol_install_config:
-      method: PATCH
-      uri: "/mgmt/tm/sys/provision/avr"
-      body: '{"level":"none"}'
-      host: "{{appliance}}"
-      username: "{{setup_user}}"
-      password: "{{setup_pass}}"
-
-  - name: Assign the SWG provisioning
-    icontrol_install_config:
-      method: PATCH
-      uri: "/mgmt/tm/sys/provision/swg"
-      body: '{"level":"none"}'
-      host: "{{appliance}}"
-      username: "{{setup_user}}"
-      password: "{{setup_pass}}"
+      validate_certs: "no"
+     delegate_to: localhost
+     with_items:
+        - server: "{{ server1 }}"
+          module: "asm"
+          module: "apm"
+        - server: "{{ server2 }}"
+          module: "asm"
+          module: "apm"
