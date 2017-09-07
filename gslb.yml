@@ -41,6 +41,7 @@
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
     with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
     
   - name: Adding a TCP GTM listener
     icontrol_install_config: 
@@ -118,6 +119,7 @@
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
     with_items: "{{spreadsheet}}"
+
   - name: Adding first GTM pool
     icontrol_install_config:
       method: "_post_"
