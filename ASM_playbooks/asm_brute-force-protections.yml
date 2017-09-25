@@ -14,7 +14,7 @@
 #      See the UOBxa66WFloQwonbHg3Rlw example below.
 
 - name: F5 Setup
-  hosts: 10.0.0.180
+  hosts: localhost
   connection: local
   gather_facts: no
   vars:

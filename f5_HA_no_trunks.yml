@@ -35,7 +35,7 @@
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
     
-  - name: Disable GUI on Device A
+  - name: Disable setup GUI on Device A
     icontrol_install_config: 
       uri: "/mgmt/tm/sys/globalSettings"
       method: PATCH
@@ -57,7 +57,7 @@
     with_items: "{{spreadsheet}}"
     when: item.primary == "no"
     
-  - name: Disable GUI on Device B
+  - name: Disable setup GUI on Device B
     icontrol_install_config: 
       uri: "/mgmt/tm/sys/globalSettings"
       method: PATCH

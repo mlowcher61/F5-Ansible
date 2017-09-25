@@ -23,8 +23,8 @@
   gather_facts: no
   vars:
     appliance: "acproxy"
-    setup_user: "ubuntu"
-    setup_pass: "Kenkar@06"
+    setup_user: "admin"
+    setup_pass: "austin"
     ACproxy_code: "f5-acproxy-1.0.1-build.52.tgz"
     ACproxy_start: "acproxy:1.0.1-build.52"
 
@@ -38,6 +38,15 @@
 
    - name: Copying docker.list file to linux host
      copy: src=~/ansible/playbooks/docker.list dest=/etc/apt/sources.list.d/
+
+   - name: makding cloud_vendors directory
+     raw: mkdir cloud_vendors
+
+   - name: making aws directory
+     raw: mkdir ./cloud_vendors/aws
+
+   - name: Copying aws_config.json file to linux host
+     copy: src=~/ansible/playbooks/aws_config.json dest=/home/ubuntu/cloud_vendors/aws mode=755
 
    - name: Copying F5 AC_proxy software to linux host
      copy: src=~/ansible/playbooks/f5-acproxy-1.0.1-build.52.tgz dest=/home/ubuntu mode=755
@@ -55,5 +64,5 @@
      raw: sudo docker run -d -e adminPort=9001 --restart=always --net=host -e proxyName=Proxy1 -e user="{{setup_user}}" -e passwd="{{setup_pass}}" -e publish=true -it -v /home/ubuntu/cloud_vendors/aws:/app/proxy/vendors/aws -v /app/proxy/log -v /app/proxy/config f5/"{{ACproxy_start}}"
 
    - name: Firing up second instance of ACproxy at port 9002
-     raw: sudo docker run -d -e adminPort=9002 --restart=always --net=host -e proxyName=Proxy2 -e user="{{setup_user}}" -e passwd="{{setup_pass}}" -e publish=true-it -v /app/proxy/log -v /app/proxy/config f5/"{{ACproxy_start}}"
+     raw: sudo docker run -d -e adminPort=9002 --restart=always --net=host -e proxyName=Proxy2 -e user="{{setup_user}}" -e passwd="{{setup_pass}}" -e publish=true-it -v /home/ubuntu/cloud_vendors/aws:/app/proxy/vendors/aws -v /app/proxy/log -v /app/proxy/config f5/"{{ACproxy_start}}"
 

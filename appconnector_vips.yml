@@ -32,11 +32,11 @@
 #        such as "myapp_http_profile" and edit it accordingly under "vars"
 
 - name: Configuring App Connecter service center
-  hosts: 10.0.0.185
+  hosts: localhost
   connection: local
   gather_facts: no
   vars:
-    appliance: "10.0.0.185"
+    appliance: "10.0.0.40"
     setup_user: "admin"
     setup_pass: "admin"
     ACproxy_vip_name: "ACproxy_vs"
@@ -46,7 +46,7 @@
     cloud_pool: "my_cloud_pool"
     cloud_vip_ip: "20.20.20.110"
     cloud_vip_name: "cloud-vip"
-    cloud_http_mon: "cloud_http_mon"
+    cloud_http_mon: "ac_http_mon"
 
   tasks: 
 
@@ -68,9 +68,9 @@
 
    - name: Creating the cloud_pool
      bigip_pool:
-         lb_method: "round_robin"
-         monitors: "{{cloud_http_mon}}"
+#         lb_method: "round_robin"
          name: "{{cloud_pool}}"
+         monitors: "{{cloud_http_mon}}"
          password: "{{setup_pass}}"
          server: "{{appliance}}"
          slow_ramp_time: "120"

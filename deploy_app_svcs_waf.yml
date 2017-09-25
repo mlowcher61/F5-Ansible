@@ -38,7 +38,7 @@
   #The body of the iApp is passed in as a JSON blob.
   - name: Deploy iApp
     bigip_iapp_service:
-      name: "cust7-waf"
+      name: "cust1-waf"
       template: "appsvcs_integration_v2.0.004_test"
       parameters: "{{ lookup('file', '/var/tmp/waf_final.json') }}"
       server: "{{server}}"

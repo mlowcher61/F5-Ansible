@@ -12,10 +12,7 @@
   connection: local
   gather_facts: false
   vars:
-   server1: 10.0.0.180
-   server2: 10.0.0.181
-   module1: asm
-   module2: apm
+   server: loadbalancer
    setup_user: admin
    setup_pass: admin
 
@@ -24,17 +21,10 @@
   tasks: 
    - name: Provisioning module
      bigip_provision:
-      module: "{{ item.module }}"
+      module: "apm"
       level: "nominal"
-      server: "{{ item.server }}"
+      server: "{{ server }}"
       user: "{{setup_user}}"
       password: "{{setup_pass}}"
       validate_certs: "no"
      delegate_to: localhost
-     with_items:
-        - server: "{{ server1 }}"
-          module: "asm"
-          module: "apm"
-        - server: "{{ server2 }}"
-          module: "asm"
-          module: "apm"

@@ -16,15 +16,15 @@
   - hosts: loadbalancer[0]
     tasks:
       - name: License Big-IP
-        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey TEQPE-NEKEP-KCBXE-XXLHO-HAQVMYD
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey QRRDH-MEOSM-PHIGT-OZHMI-YTAOUFK
 
   - hosts: loadbalancer[1]
     tasks:
       - name: License Big-IP
-        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey SONWM-XPOPW-SGVOC-TFDRS-VVPTOFJ
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey KVLEF-EPYAT-QXEJW-AJVMP-CBKBSKD
 
 
 
 # Back up licenses
-#QRRDH-MEOSM-PHIGT-OZHMI-YTAOUFK
-#KVLEF-EPYAT-QXEJW-AJVMP-CBKBSKD
+#ZFAZV-VQHYG-ZCWJS-ZXKMA-IJWSTWQ
+#FYQME-SBOAS-QXVAP-BJNUS-UYQBFWF

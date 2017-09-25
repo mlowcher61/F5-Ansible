@@ -13,11 +13,6 @@
 #      - Provision all desired modules including iRulesLX. This playbook will
 #        provision iRulesLX if you are running Ansible 2.4 and you uncomment 
 #        the provisioning module below.
-#      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#      You must provision iRulesLX before running this playbook. The module
-#      that performs this function will not work until Ansible 2.4 is released
-#      I've left the code in and commented it out for later.
-#      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 #      - This playbook will enable App Connector.
 #        NOTICE: Be sure you have staged the files in the ~/ansible/playbooks
 #        directory as described in the "Ansible Orchestration for Application
@@ -26,28 +21,33 @@
 #        deployment guide prior to running the appconnector_vips playbook. 
 
 - name: Configuring App Connecter service center
-  hosts: 10.0.0.185
+  hosts: localhost
   connection: local
   gather_facts: no
   vars:
-    appliance: "10.0.0.185"
+    server1: "10.0.0.40"
     setup_user: "admin"
     setup_pass: "admin"
-#    app_connector: "app-connector-1.0.0-44.0.noarch.rpm"
-  tasks: 
-#   - name: Provisioning iRulesLX
-#     bigip_provision: # This module will not be supported until Ansible v2.4
-#         module: "ilx"
-#         level: "nominal"
-#         server: "{{appliance}}"
-#         user: "{{setup_user}}"
-#         password: "{{setup_pass}}"
+    app_connector: "app-connector-1.0.1-52.0.noarch.rpm"
+
+  tasks:
+ 
+#   - name: Enabling App Connector
+#     bigip_command:
+#         commands: bash run touch/var/config/rest/iapps/enable
+#         server: "{{ server1 }}"
+#         password: "{{ setup_pass }}"
+#         user: "{{ setup_user }}"
 #         validate_certs: "no"
 #     delegate_to: localhost
-#
-#   - name: Waiting 60 seconds for iRulesLX to be provisioned 
-#     wait_for:
-#       timeout: 60
+# tmsh bash run util touch /var/config/rest/iapps/third
 
-   - name: Enabling App Connector
-     raw: touch /var/config/rest/iapps/enable
+   - name: Add an iAppLX package
+     bigip_iapplx_package:
+         package: "./files/{{app_connector}}"
+         password: "{{setup_pass}}"
+         server: "{{ server1 }}"
+         state: "present"
+         user: "{{setup_user}}"
+         validate_certs: "no"
+     delegate_to: localhost
