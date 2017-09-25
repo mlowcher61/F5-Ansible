@@ -1,0 +1,60 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create the virtual servers
+#      needed on the application connector service center.
+#
+#      - This playbook will copy the necessary files to the F5
+#        NOTICE: Be sure you have staged the files in the ~/ansible/playbooks
+#        directory as described in the "Ansible Orchestration for Application
+#        Connector deployment guide located at https://github.com/mlowcher61
+#      - This playbook will create the two neccessary virtual servers for App 
+#        Connector service center. 
+#         -- A port 443 vip with the appropriate clientssl profile, a tcp and
+#            an HTTP profile. Create the child profiles before running this
+#            playbook. This vip will NOT have a pool.
+#         -- Create a port 80 vip with a pool with no members.
+#      - Edit the "vars" below to match your environment. "appliance" is the
+#        management ip address of the F5. 
+#      - The ACproxy ip is the public ip address that clients will connect to 
+#        when accessing your application(s). You will need to run this playbook
+#        for ever application that you deploy.
+#      - The cloud ip is the public ip address that the AC_proxies will connect
+#        back to.
+#      - Before running this playbook, create the clientssl profile you will use
+#        to offload SSL/TLS and change the value "clientssl" under vars to the 
+#        correct name. Such as "myapp_clientssl" 
+#      - It is also a best practice to create an http profile per application
+#        such as "myapp_http_profile" and edit it accordingly under "vars"
+
+- name: Configuring App Connecter service center
+  hosts: 10.0.0.181
+  connection: local
+  gather_facts: no
+  vars:
+    appliance: "10.0.0.185"
+    setup_user: "admin"
+    setup_pass: "admin"
+    ACproxy_vip_name: "ACproxy_vs"
+    ACproxy_vip_ip: "20.20.20.108"
+    http_profile: "http"
+    clientssl: "clientssl"
+    cloud_pool: "my_cloud_pool"
+    cloud_vip_ip: "20.20.20.110"
+    cloud_vip_name: "cloud-vip"
+    cloud_http_mon: "cloud_http_mon"
+
+  tasks: 
+
+   - name: Creating port 443 Vip with no pool that the AC_proxies will connect to.
+     bigip_iapplx_package:
+         package: "f5-acproxy-1.0.1-build.52.tgz"
+         password: "admin"
+         server: "10.0.0.181"
+         state: "present"
+         user: "admin"
+     delegate_to: localhost

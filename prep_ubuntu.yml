@@ -1,0 +1,36 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will perform the steps to configure
+#      ACProxy on a linux machine in the cloud
+#      A deployment guide can be found at https://github.com/mlowcher61
+#      The steps are as follows:
+#      - Spin up an instance of Linux Ubuntu in your cloud.
+#      - Perform steps neccessary to have Ansible ssh to the linux host
+#      - Verify that the linux host can access the internet
+#      - Put ACproxy code into your working directory in Ansible host (~/ansible/playbooks)
+#      - Put docker.list file in the same directory.
+#       (See Ansible Orchestration for App Connector)
+
+- name: Creating a docker system running two instances of ACproxy
+  hosts: acproxy
+  sudo: yes
+  connection: local
+  gather_facts: no
+  vars:
+    appliance: "acproxy"
+    setup_user: "admin"
+    setup_pass: "austin_acproxy"
+    ACproxy_code: "f5-acproxy-1.0.1-build.52.tgz"
+    ACproxy_start: "acproxy:1.0.1-build.52"
+
+  tasks:
+
+   - name: Prepping Ubuntu
+     raw: apt-get update
+     raw: apt-get install python-pip
+     raw: pip install --upgrade pip

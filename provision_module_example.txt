@@ -1,0 +1,23 @@
+   - name: Provisioning modules
+     bigip_provision:
+         module:"{{ item.module }}"
+         level: "nominal"
+         server: "{{ item.server }}"
+         user: "{{setup_user}}"
+         password: "{{setup_pass}}"
+         validate_certs: "no"
+     delegate_to: localhost
+     with_items:
+       - server: "{{ server1 }}"
+         module: "afm"
+         module: "asm"
+         module: "apm"
+         module: "gtm"
+         module: "ilx"
+       - server: "{{ server2 }}"
+         module: "afm"
+         module: "asm"
+         module: "apm"
+         module: "gtm"
+         module: "ilx"
+
