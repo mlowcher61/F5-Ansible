@@ -28,18 +28,18 @@
     server1: "10.0.0.40"
     setup_user: "admin"
     setup_pass: "admin"
-    app_connector: "app-connector-1.0.1-52.0.noarch.rpm"
+    app_connector: "app-connector-1.1.0-70.0.noarch.rpm"
 
   tasks:
  
-#   - name: Enabling App Connector
-#     bigip_command:
-#         commands: bash run touch/var/config/rest/iapps/enable
-#         server: "{{ server1 }}"
-#         password: "{{ setup_pass }}"
-#         user: "{{ setup_user }}"
-#         validate_certs: "no"
-#     delegate_to: localhost
+   - name: Enabling App Connector
+     bigip_command:
+         commands: bash run touch /var/config/rest/iapps/enable
+         server: "{{ server1 }}"
+         password: "{{ setup_pass }}"
+         user: "{{ setup_user }}"
+         validate_certs: "no"
+     delegate_to: localhost
 # tmsh bash run util touch /var/config/rest/iapps/third
 
    - name: Add an iAppLX package

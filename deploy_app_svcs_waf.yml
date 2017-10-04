@@ -14,11 +14,11 @@
 #      desired VIP address. Look for vs_Name and change the vip name
 #
 
-- hosts: 10.0.0.180
+- hosts: localhost
   gather_facts: false
 
   vars:
-   server: 10.0.0.180
+   server: 192.168.1.5
    setup_user: admin
    setup_pass: admin
 
@@ -44,7 +44,7 @@
       server: "{{server}}"
       user: "{{setup_user}}"
       password: "{{setup_pass}}"
-      state: "present"
+      state: "absent"
 #      state: "absent"
  #State "absent" will remove the application 
     delegate_to: localhost

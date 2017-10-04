@@ -24,9 +24,9 @@
   vars:
     appliance: "acproxy"
     setup_user: "admin"
-    setup_pass: "austin"
-    ACproxy_code: "f5-acproxy-1.0.1-build.52.tgz"
-    ACproxy_start: "acproxy:1.0.1-build.52"
+    setup_pass: "austinproxy"
+    ACproxy_code: "f5-acproxy-1.1.0-build.70.tgz"
+    ACproxy_start: "acproxy:1.1.0-build.70"
 
   tasks:
 
@@ -46,10 +46,10 @@
      raw: mkdir ./cloud_vendors/aws
 
    - name: Copying aws_config.json file to linux host
-     copy: src=~/ansible/playbooks/aws_config.json dest=/home/ubuntu/cloud_vendors/aws mode=755
+     copy: src=/var/tmp/aws_config.json dest=/home/ubuntu/cloud_vendors/aws mode=755
 
    - name: Copying F5 AC_proxy software to linux host
-     copy: src=~/ansible/playbooks/f5-acproxy-1.0.1-build.52.tgz dest=/home/ubuntu mode=755
+     copy: src=~/ansible/playbooks/f5-acproxy-1.1.0-build.70.tgz dest=/home/ubuntu mode=755
 
    - name: Updating apt...
      raw: sudo apt-get update

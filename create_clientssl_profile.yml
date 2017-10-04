@@ -21,7 +21,7 @@
   vars:
     setup_user: "admin"
     setup_pass: "admin"
-    bigip: "10.0.0.180"
+    bigip: "172.26.30.222"
     crt: "kenyon2"
     key: "kenyon2" 
     clientssl: "kenyon2_clientssl"
