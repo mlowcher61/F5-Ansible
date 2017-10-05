@@ -18,7 +18,7 @@
   gather_facts: false
 
   vars:
-   server: 192.168.1.5
+   server: all
    setup_user: admin
    setup_pass: admin
 
