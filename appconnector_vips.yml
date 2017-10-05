@@ -32,11 +32,11 @@
 #        such as "myapp_http_profile" and edit it accordingly under "vars"
 
 - name: Configuring App Connecter service center
-  hosts: localhost
+  hosts: 10.0.0.180
   connection: local
   gather_facts: no
   vars:
-    appliance: "10.0.0.40"
+    appliance: "10.0.0.180"
     setup_user: "admin"
     setup_pass: "admin"
     ACproxy_vip_name: "ACproxy_vs"
