@@ -13,4 +13,4 @@
 
      tasks:
        - name: push jq
-         copy: src=/home/lowcher/ansible/playbooks/jq dest=/config/ mode=755      
+         copy: src=./jq dest=/config/ mode=755      
