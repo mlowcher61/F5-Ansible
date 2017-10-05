@@ -12,7 +12,7 @@
 #      
 
 - name: Push PEM Certificate and key
-  hosts: all
+  hosts: localhost
   connection: local
   gather_facts: False
   vars:

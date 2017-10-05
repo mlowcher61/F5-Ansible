@@ -14,11 +14,11 @@
 #      desired VIP address. Look for vs_Name and change the vip name
 #
 
-- hosts: all
+- hosts: 10.0.0.180
   gather_facts: false
 
   vars:
-   server: all
+   server: 10.0.0.180
    setup_user: admin
    setup_pass: admin
 
