@@ -14,7 +14,7 @@
 #      desired VIP address. Look for vs_Name and change the vip name
 #
 
-- hosts: localhost
+- hosts: all
   gather_facts: false
 
   vars:
