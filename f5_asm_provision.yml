@@ -1,5 +1,5 @@
 ---
-  - hosts: loadbalancer
+  - hosts: f5s
     tasks:
       - name: Provision ASM on both units 	
         raw: "tmsh modify sys provision asm level nominal" 
