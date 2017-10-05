@@ -12,13 +12,13 @@
 #      
 
 - name: Push PEM Certificate and key
-  hosts: localhost
+  hosts: all
   connection: local
   gather_facts: False
   vars:
     setup_user: admin
     setup_pass: admin
-    bigip: 172.26.30.222
+    bigip: 10.0.0.180
 
   tasks: 
    - name: Pushing the certificate and key to the F5
