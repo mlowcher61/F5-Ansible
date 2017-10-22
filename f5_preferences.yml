@@ -20,7 +20,7 @@
   vars:
     setup_user: "admin"
     setup_pass: "admin"
-    appliance: "10.0.0.160"
+    appliance: "10.0.0.40"
 
   tasks:
   - name: Change preference from basic to advanced
@@ -50,11 +50,11 @@
       username: "{{setup_user}}"
       password: "{{setup_pass}}"
 
-  - name: Config Sync
-    icontrol_install_config:
-      uri: "mgmt/tm/cm/"
-      body: '{"command":"run","utilCmdArgs":"config-sync to-group SyncFail"}'
-      host: "{{appliance}}"
-      username: "{{setup_user}}"
-      password: "{{setup_pass}}"
+#  - name: Config Sync
+#    icontrol_install_config:
+#      uri: "mgmt/tm/cm/"
+#      body: '{"command":"run","utilCmdArgs":"config-sync to-group SyncFail"}'
+#      host: "{{appliance}}"
+#      username: "{{setup_user}}"
+#      password: "{{setup_pass}}"
 

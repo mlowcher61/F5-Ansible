@@ -11,17 +11,17 @@
 #      Edit ip addresses, username and password accordingly.
 
 - name: Create a static route
-  hosts: 10.0.0.185
+  hosts: localhost
   connection: local
 
   tasks: 
-   - name: Creating static route with gateway address
-     bigip_static_route:
-         server: "10.0.0.185"
-         destination: "3.3.3.3"
-         gateway_address: "20.20.20.1"
-         user: "admin"
-         password: "admin"
-         name: "ansible_static_route"
-         validate_certs: "no"
-     delegate_to: localhost
+  - name: Creating static route with gateway address
+      bigip_static_route:
+          server: "10.0.0.40"
+          destination: "3.3.3.3"
+          gateway_address: "10.168.68.1%1"
+          user: "admin"
+          password: "admin"
+          name: "ansible_static_route"
+          validate_certs: "no"
+      delegate_to: localhost

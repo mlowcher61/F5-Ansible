@@ -37,7 +37,7 @@
      raw: sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
 
    - name: Copying docker.list file to linux host
-     copy: src=~/ansible/playbooks/docker.list dest=/etc/apt/sources.list.d/
+     copy: src=~/ansible/playbooks/files/docker.list dest=/etc/apt/sources.list.d/
 
    - name: makding cloud_vendors directory
      raw: mkdir cloud_vendors
@@ -49,7 +49,7 @@
      copy: src=/var/tmp/aws_config.json dest=/home/ubuntu/cloud_vendors/aws mode=755
 
    - name: Copying F5 AC_proxy software to linux host
-     copy: src=~/ansible/playbooks/f5-acproxy-1.1.0-build.70.tgz dest=/home/ubuntu mode=755
+     copy: src=~/ansible/playbooks/files/f5-acproxy-1.1.0-build.70.tgz dest=/home/ubuntu mode=755
 
    - name: Updating apt...
      raw: sudo apt-get update

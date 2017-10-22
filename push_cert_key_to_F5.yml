@@ -1,4 +1,3 @@
-#!/usr/bin/ansible-playbook
 ---
 #
 #      Copyright (c) 2016 F5 Networks
@@ -18,7 +17,7 @@
   vars:
     setup_user: admin
     setup_pass: admin
-    bigip: 10.0.0.180
+    bigip: 10.0.0.40
 
   tasks: 
    - name: Pushing the certificate and key to the F5

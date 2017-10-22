@@ -15,15 +15,15 @@
 #      :%s/kenyon2/new_name/g 
 
 - name: F5 Setup
-  hosts: 10.0.0.180
+  hosts: 10.0.0.40
   connection: local
   gather_facts: no
   vars:
     setup_user: "admin"
     setup_pass: "admin"
-    bigip: "10.0.0.180"
-    crt: "kenyon2"
-    key: "kenyon2" 
+    bigip: "10.0.0.40"
+    crt: "kenyon2.crt"
+    key: "kenyon2.key" 
     clientssl: "kenyon2_clientssl"
     
   tasks:

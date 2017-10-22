@@ -14,11 +14,11 @@
 #      desired VIP address. Look for vs_Name and change the vip name
 #
 
-- hosts: 10.0.0.180
+- hosts: 10.0.0.40
   gather_facts: false
 
   vars:
-   server: 10.0.0.180
+   server: 10.0.0.40
    setup_user: admin
    setup_pass: admin
 
@@ -38,13 +38,13 @@
   #The body of the iApp is passed in as a JSON blob.
   - name: Deploy iApp
     bigip_iapp_service:
-      name: "cust1-waf"
+      name: "app1-waf"
       template: "appsvcs_integration_v2.0.004_test"
       parameters: "{{ lookup('file', '/var/tmp/waf_final.json') }}"
       server: "{{server}}"
       user: "{{setup_user}}"
       password: "{{setup_pass}}"
-      state: "absent"
+      state: "present"
 #      state: "absent"
  #State "absent" will remove the application 
     delegate_to: localhost

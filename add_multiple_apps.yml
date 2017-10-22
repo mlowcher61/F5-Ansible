@@ -45,13 +45,13 @@
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
 
-  - name: Config Sync
-    icontrol_install_config:
-      uri: "mgmt/tm/cm/"
-      body: '{"command":"run","utilCmdArgs":"config-sync to-group SyncFail"}'
-      host: "{{item.appliance}}"
-      username: "{{setup_user}}"
-      password: "{{setup_pass}}"
-    with_items: "{{spreadsheet}}"
-    when: item.primary == "yes"
+#  - name: Config Sync
+#    icontrol_install_config:
+#      uri: "mgmt/tm/cm/"
+#      body: '{"command":"run","utilCmdArgs":"config-sync to-group SyncFail"}'
+#      host: "{{item.appliance}}"
+#      username: "{{setup_user}}"
+#      password: "{{setup_pass}}"
+#    with_items: "{{spreadsheet}}"
+#    when: item.primary == "yes"
     

@@ -12,7 +12,7 @@
 #      to loadbalancer[0] it will reboot the first loadbalancer in the list.
 #      loadbalancer[2] would reboot the third loadbalancer in the list.
 
-  - hosts: loadbalancer
+  - hosts: bigip
     tasks:
       - name: Rebooting loadbalancers
         raw: reboot 
