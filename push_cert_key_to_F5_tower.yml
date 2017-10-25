@@ -11,7 +11,7 @@
 #      
 
 - name: Push PEM Certificate and key
-  hosts: localhost
+  hosts: bigip
   connection: local
   gather_facts: False
 
