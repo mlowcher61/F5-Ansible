@@ -1,0 +1,52 @@
+---
+- name: Deploying an App
+  hosts: bigip
+  gather_facts: false
+  vars_files:
+    - var-app-deploy_file.yml
+
+  tasks:
+
+  - name: Creating a pool
+    bigip_pool
+    server: "{{ inventory_hostname}} "
+      user: "{{username}}"
+      password: "{{password}}"
+      state: "present"
+      monitor: "http" 
+      name: "{{item.poolname}}"
+      partition: "{{item.partition}}"
+      lb_method: "{{item.lb_method}}"
+      slow_ramp_time: 120
+      validate_certs: False
+      with_items: "{{ pool_information }}"
+    delegate_to: localhost
+
+  - name: Add members to pool
+    bigip_pool_member:
+     server: "{{ inventory_hostname }}"
+     user: "admin"
+     password: "secret"
+     state: "present"
+     pool: "my-pool"
+     partition: "Common"
+     host: "{{ ansible_default_ipv4['address'] }}"
+     port: 80
+     description: "web server"
+     connection_limit: 100
+     rate_limit: 50
+     ratio: 2
+   with_items: "{{ poolmember_information }}"
+   delegate_to: localhost
+
+  - name: create tcp-wan-optimized
+# use tcp-wan-optimized as the parent.
+
+  - name: create tcp-lan-optimized
+# use tcp-lan-optimized as the parent.
+
+ - name: create http profile
+# use http profile as parent
+
+ - name: create http monitor
+  - name: Create a VIP

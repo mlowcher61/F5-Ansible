@@ -1,0 +1,8 @@
+---
+  - hosts: bigip
+    tasks:
+      - name: Restore configuration to factory default
+        raw: tmsh create ltm profile client-ssl kenyon2_clientssl key kenyon2.key cert kenyon2.crt 
+
+
+

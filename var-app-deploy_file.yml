@@ -1,0 +1,12 @@
+username: admin
+password: admin
+
+hostname: 'ansibleManaged-bigip.local'
+
+pool_information:
+ - poolname: 'ansible_pool'
+   lb_method: 'least-connections-member'
+   partition: 'Common'
+
+poolmember_information
+ - poolmember
