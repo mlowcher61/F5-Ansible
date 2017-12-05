@@ -1,0 +1,110 @@
+#!/usr/bin/ansible-playbook
+---
+      
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      short_description: Run this playbook after licensing
+#      and provisioning to create a base configuration for 
+#      a standalone F5. This will change the name of the device
+#      and create vlans, self ips, DNS, NTP and Syslog destination.
+#      The variables are pulled from a csv file.
+
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    
+  tasks:
+  - name: Get facts from CSV file
+    csv_to_facts:
+      src: ./files/f5_standalone.csv
+
+  - name: Create VLAN Internal
+    icontrol_install_config: 
+      uri: "/mgmt/tm/net/vlan"
+      body: '{"name":"{{item.vlan_int}}","tag":"{{item.vlan_int_tag}}"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    
+  - name: Create VLAN External
+    icontrol_install_config: 
+      uri: "/mgmt/tm/net/vlan"
+      body: '{"name":"{{item.vlan_ext}}","tag":"{{item.vlan_ext_tag}}"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Assign VLAN Internal to Interface
+    icontrol_install_config: 
+      uri: "/mgmt/tm/net/vlan/~Common~{{item.vlan_int}}/interfaces"
+      body: '{"name":"{{item.int_2}}","tagged":true}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Assign VLAN External to Interface
+    icontrol_install_config: 
+      uri: "/mgmt/tm/net/vlan/~Common~{{item.vlan_ext}}/interfaces"
+      body: '{"name":"{{item.int_1}}","tagged":true}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Create Self IP External
+    icontrol_install_config: 
+      uri: "/mgmt/tm/net/self"
+      body: '{"name":"{{item.vlan_ext_selfip}}","address":"{{item.vlan_ext_selfip}}{{item.vlan_ext_selfmask}}","vlan":"/Common/{{item.vlan_ext}}","floating":"disabled","trafficGroup":"/Common/traffic-group-local-only"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Create Self IP Internal
+    icontrol_install_config: 
+      uri: "/mgmt/tm/net/self"
+      body: '{"name":"{{item.vlan_int_selfip}}","address":"{{item.vlan_int_selfip}}{{item.vlan_int_selfmask}}","vlan":"/Common/{{item.vlan_int}}","floating":"disabled","trafficGroup":"/Common/traffic-group-local-only"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+#  - name: Create DNS Servers
+#    icontrol_install_config: 
+#      uri: "/mgmt/tm/sys/dns"
+#      method: PATCH
+#      body: '{"nameServers":["{{item.dns_server_1}}","{{item.dns_server_2}}"],"search":["{{item.domain}}"]}'
+#      host: "{{item.appliance}}"
+#      username: "{{setup_user}}"
+#      password: "{{setup_pass}}"
+#    with_items: "{{spreadsheet}}"
+    
+  - name: Create NTP Servers
+    icontrol_install_config: 
+      uri: "/mgmt/tm/sys/ntp"
+      method: PATCH
+      body: '{"servers":["{{item.ntp_server_1}}","{{item.ntp_server_2}}"],"timezone":"America/Chicago"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Create Syslog Servers
+    icontrol_install_config: 
+      uri: "/mgmt/tm/sys/syslog"
+      method: PATCH
+      body: '{"remoteServers":[{"name":"remotesyslog1","host":"{{item.syslog_server}}"}]}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"

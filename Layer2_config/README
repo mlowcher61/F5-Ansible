@@ -1,0 +1,4 @@
+Steps to configure a Layer 2 configuration on redundant F5s.
+	1. License the devices using the license_F5_pair.yml playbook
+	2. Run the f5_HA_trunks playbook to setup an HA configuration
+	3.

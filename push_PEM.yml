@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    username: admin
+    password: admin
+    bigip: 10.0.0.40
+
+  tasks:
+
+   - name: Use a file lookup to import PEM Certificate
+     bigip_ssl_certificate:
+       name: "kenkar2"
+       server: "{{bigip}}"
+       user: "{{username}}"
+       password: "{{password}}"
+       state: "present"
+       cert_content: "{{ lookup('file', '/var/tmp/kenkar2.crt') }}"
+       key_content: "{{ lookup('file', '/var/tmp/kenkar2.key') }}"
+     delegate_to: localhost
+

@@ -1,0 +1,23 @@
+---
+      
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      short_description: Add the _sys_redirect irule
+
+
+- hosts: all
+  connection: local
+  gather_facts: no
+    
+  tasks:
+
+  - name: Applying redirect irule 
+    icontrol_install_config: 
+      method: PATCH
+      uri: "/mgmt/tm/ltm/rule"
+      body: '{"name":"_sys_https_redirect","fullPath":"/Common/_sys_https_redirect"}'
+      host: "{{bigip}}"
+      username: "{{username}}"
+      password: "{{password}}"

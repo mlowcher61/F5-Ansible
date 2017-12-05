@@ -1,4 +1,3 @@
-#!/usr/bin/ansible-playbook
 ---
 #
 #      Copyright (c) 2016 F5 Networks. 
@@ -18,9 +17,9 @@
     appliance: "10.0.0.157"
     
   tasks:
-#  - name: Get facts from CSV file
-#    csv_to_facts:
-#      src: ./files/firewall.csv
+  - name: Get facts from CSV file
+    csv_to_facts:
+      src: ./files/firewall.csv
 
   - name: Creating a firewall rule
     icontrol_install_config: 

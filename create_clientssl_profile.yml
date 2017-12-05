@@ -1,4 +1,3 @@
-#!/usr/bin/ansible-playbook
 ---
 #
 #      Copyright (c) 2016 F5 Networks 
@@ -19,21 +18,26 @@
   connection: local
   gather_facts: no
   vars:
-    setup_user: "admin"
-    setup_pass: "admin"
+    username: "admin"
+    password: "admin"
     bigip: "10.0.0.40"
-    crt: "kenyon2.crt"
+    cert: "kenyon2.crt"
     key: "kenyon2.key" 
     clientssl: "kenyon2_clientssl"
     
   tasks:
 
-   - name: Create clientssl profiles
-     icontrol_install_config: 
-       method: "_post_"
-       uri: "/mgmt/tm/ltm/profile/client-ssl"
-       body: '{"name":"{{clientssl}}","cert":"{{crt}}","key":"{{key}}"}'
-       host: "{{bigip}}"
-       username: "{{setup_user}}"
-       password: "{{setup_pass}}"
-
+   - name: Create a client SSL profile with a cert/key/specific ciphers
+     bigip_profile_client_ssl:
+      state: present
+      server: "{{bigip}}"
+      user: "{{username}}"
+      password: "{{password}}"
+      ciphers: "!SSLv3:!SSLv2:ECDHE+AES-GCM+SHA256:ECDHE-RSA-AES128-CBC-SHA"
+      name: my_profile
+      validate_certs: False
+      cert_key_chain:
+        - cert: "{{cert}}"
+          key: "{{key}}"
+          chain: "{{cert}}"
+     delegate_to: localhost

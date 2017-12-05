@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    username: admin
+    password: admin
+    bigip: 10.0.0.162
+
+  tasks:
+
+   - name: Resetting to default config
+     bigip_command:
+      state: present
+      server: "{{bigip}}"
+      user: "{{username}}"
+      password: "{{password}}"
+      commands:
+      - load sys config default
+     delegate_to: localhost
+

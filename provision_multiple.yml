@@ -18,7 +18,11 @@
       user: "{{ username }}"
       password: "{{ password }}"
       validate_certs: False
-      module: "{{module}}"
+      module: "{{item}}"
       level: "{{level}}"
     tags: provision
+    with_items:
+      - asm
+      - afm
+      - apm
     delegate_to: localhost

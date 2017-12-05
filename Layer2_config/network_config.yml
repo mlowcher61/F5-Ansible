@@ -1,0 +1,66 @@
+---
+
+# There is no module for creating trunks at this time.
+# Use the ReST API playbook for creating trunks named
+# create_trunks.yml
+
+- name: Layer 2 Network Config
+  hosts: bigip
+  gather_facts: false
+  vars_files:
+    - var-onboard-network_file.yml
+
+  tasks:
+
+  - name: Create a route domain
+    bigip_routedomain:
+        id: "{{item.id}}"
+        user: "{{username}}"
+        password: "{{password}}"
+        validate_certs: False
+        server: "{{ inventory_hostname }}"
+        state: "present"
+    with_items: "{{ vlan_information }}"
+    delegate_to: localhost
+
+  - name: Configure VLANs on the BIG-IP
+    bigip_vlan:
+     server: "{{ inventory_hostname }}"
+     user: "{{ username }}"
+     password: "{{ password }}"
+     validate_certs: False
+     name: "{{ item.name }}"
+     tag: "{{ item.tag }}"
+     tagged_interface: "{{ item.interface }}"
+    with_items: "{{ vlan_information }}"
+    delegate_to: localhost
+
+  - name: Set VLANs on the route domain
+    bigip_routedomain:
+        id: "{{item.id}}"
+        user: "{{username}}"
+        password: "{{password}}"
+        validate_certs: False
+        server: "{{ inventory_hostname }}"
+        state: "present"
+        vlans:
+            - Internal
+            - External
+# "{{ item.name }}"
+    with_items: "{{ vlan_information }}"
+    delegate_to: localhost
+
+  - name: Configure SELF-IPs on the BIG-IP
+    bigip_selfip:
+     server: "{{ inventory_hostname }}"
+     user: "{{ username }}"
+     password: "{{ password }}"
+     validate_certs: False
+     name: "{{ item.name }}"
+     address: "{{ item.address }}"
+     netmask: "{{ item.netmask }}"
+     route_domain: "{{item.id}}"
+     vlan: "{{ item.vlan }}"
+     allow_service: "{{item.allow_service}}"
+    with_items: "{{ selfip_information }}"
+    delegate_to: localhost
