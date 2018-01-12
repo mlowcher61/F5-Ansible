@@ -38,6 +38,18 @@
          validate_certs: "no"
      delegate_to: localhost
 
+   - name: Provision BIG-IP with the irulesLX module
+     bigip_provision:
+       server: "{{ server1 }}"
+       user: "{{ setup_user }}"
+       password: "{{ setup_pass }}"
+       validate_certs: False
+       module: ilx
+       level: nominal
+       state: present
+#     tags: provision
+     delegate_to: localhost
+
    - name: Add an iAppLX package
      bigip_iapplx_package:
          package: "{{app_connector}}"
