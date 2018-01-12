@@ -26,22 +26,21 @@
     server1: "serv-center"
     setup_user: "admin"
     setup_pass: "admin"
-    app_connector: "app-connector-1.1.1.8.noarch.rpm"
-
+    app_connector: "app-connector-1.1.1-8.0.noarch.rpm"
   tasks:
  
-#   - name: Enabling App Connector
-#     bigip_command:
-#         commands: bash run touch /var/config/rest/iapps/enable
-#         server: "{{ server1 }}"
-#         password: "{{ setup_pass }}"
-#         user: "{{ setup_user }}"
-#         validate_certs: "no"
-#     delegate_to: localhost
+   - name: Enabling App Connector
+     bigip_command:
+         commands: run /util bash -c 'touch /var/config/rest/iapps/enable'
+         server: "{{ server1 }}"
+         password: "{{ setup_pass }}"
+         user: "{{ setup_user }}"
+         validate_certs: "no"
+     delegate_to: localhost
 
    - name: Add an iAppLX package
      bigip_iapplx_package:
-         package: app-connector-1.1.1.8.noarch.rpm
+         package: "{{app_connector}}"
          password: "{{setup_pass}}"
          server: "{{ server1 }}"
          state: present

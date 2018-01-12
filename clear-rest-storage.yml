@@ -1,0 +1,6 @@
+---
+  - hosts: serv-center
+    tasks:
+      - name: Clearing rest storage
+        raw: clear-rest-storage
+
