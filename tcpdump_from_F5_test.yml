@@ -18,8 +18,8 @@
   gather_facts: no
   vars:
      vlan: "external" # vlan name or 0.0 to capture from all interfaces
-     filter: "host 192.168.1.10" # create any pre-filter you'd like
-     cap_file: "packet_capture_"{{ ansible_hostname }}"_"{{ ansible_date_time['epoch'] }}".pcap"
+     filter: "not icmp" # create any pre-filter you'd like
+     cap_file: "packet_capture_serv-center_not_icmp.pcap"
      time: "60"
  
   tasks:
@@ -39,5 +39,5 @@
     - name: copy packet capture to local box
       fetch: src=/tmp/"{{ cap_file }}".gz dest=/tmp/ flat=yes
  
-    - name: delete capture file from F5
-      file: path=/tmp/{{ cap_file }}.gz state=absent
+#    - name: delete capture file from F5
+#      file: path=/tmp/{{ cap_file }}.gz state=absent

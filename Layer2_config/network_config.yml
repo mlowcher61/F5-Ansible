@@ -106,13 +106,13 @@
      user: "{{username}}"
      password: "{{password}}"
      validate_certs: False
-     name: "{{item.self_name}}"
+     name: "{{item.self_static_name}}"
      address: "{{item.address_static}}"
      netmask: "{{item.netmask}}"
      route_domain: "{{item.id}}"
      traffic_group: "{{tg_static}}"	
      vlan: "{{item.vlan}}"
-     allow_service: "{{item.allow_service}}"
+     allow_service: "{{item.static_allow_service}}"
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
     delegate_to: localhost
@@ -123,13 +123,13 @@
      user: "{{username}}"
      password: "{{password}}"
      validate_certs: False
-     name: "{{item.self_name}}"
+     name: "{{item.self_static_name}}"
      address: "{{item.address_static}}"
      netmask: "{{item.netmask}}"
      route_domain: "{{item.id}}"
      traffic_group: "{{tg_static}}"
      vlan: "{{item.vlan}}"
-     allow_service: "{{item.allow_service}}"
+     allow_service: "{{item.static_allow_service}}"
     with_items: "{{spreadsheet}}"
     when: item.primary == "no"
     delegate_to: localhost
@@ -140,13 +140,13 @@
      user: "{{username}}"
      password: "{{password}}"
      validate_certs: False
-     name: "{{item.self_name}}"
+     name: "{{item.self_float_name}}"
      address: "{{item.address_float}}"
      netmask: "{{item.netmask}}"
      route_domain: "{{item.id}}"
      traffic_group: "{{tg_float}}"
      vlan: "{{item.vlan}}"
-     allow_service: "{{item.allow_service}}"
+     allow_service: "{{item.float_allow_service}}"
     with_items: "{{spreadsheet}}"
     when: item.primary == "yes"
     delegate_to: localhost
@@ -157,13 +157,13 @@
      user: "{{username}}"
      password: "{{password}}"
      validate_certs: False
-     name: "{{item.self_name}}"
+     name: "{{item.self_float_name}}"
      address: "{{item.address_float}}"
      netmask: "{{item.netmask}}"
      route_domain: "{{item.id}}"
      traffic_group: "{{tg_float}}"
      vlan: "{{item.vlan}}"
-     allow_service: "{{item.allow_service}}"
+     allow_service: "{{item.float_allow_service}}"
     with_items: "{{spreadsheet}}"
     when: item.primary == "no"
     delegate_to: localhost
