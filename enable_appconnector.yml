@@ -50,6 +50,10 @@
 #     tags: provision
      delegate_to: localhost
 
+   - name: Waiting 30 seconds for provisioning to finish 
+     wait_for:
+       timeout: 30
+
    - name: Add an iAppLX package
      bigip_iapplx_package:
          package: "{{app_connector}}"
