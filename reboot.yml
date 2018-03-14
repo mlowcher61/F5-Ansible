@@ -1,4 +1,3 @@
-#!/usr/bin/ansible-playbook
 ---
 #
 #      Copyright (c) 2016 F5 Networks
@@ -12,7 +11,7 @@
 #      to loadbalancer[0] it will reboot the first loadbalancer in the list.
 #      loadbalancer[2] would reboot the third loadbalancer in the list.
 
-  - hosts: bigip
+  - hosts: bigip[0]
     tasks:
       - name: Rebooting loadbalancers
         raw: reboot 

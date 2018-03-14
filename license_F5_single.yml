@@ -1,6 +1,6 @@
 ---
-  - hosts: serv-center
+  - hosts: bigip[1]
     tasks:
       - name: License Big-IP
-        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey RCYBL-EDCVZ-ODETP-VQQKT-VTICTGZ
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey GROVA-XAJAK-RXOLX-GTKZJ-FJJCYEX
 

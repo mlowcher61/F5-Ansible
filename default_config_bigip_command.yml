@@ -1,21 +1,21 @@
 ---
-- hosts: localhost
+- hosts: 10.0.0.168
   connection: local
   gather_facts: no
   vars:
     username: admin
     password: admin
-    bigip: 10.0.0.162
+    bigip: bigip[1]
 
   tasks:
 
    - name: Resetting to default config
      bigip_command:
-      state: present
-      server: "{{bigip}}"
+      server: bigip[1]
       user: "{{username}}"
       password: "{{password}}"
       commands:
       - load sys config default
+      validate_certs: false
      delegate_to: localhost
 

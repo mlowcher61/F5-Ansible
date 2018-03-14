@@ -15,20 +15,12 @@
   - hosts: bigip[0]
     tasks:
       - name: License Big-IP
-        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey QBMUL-ZCQPO-AYGKQ-PDBCD-AFXSXIU
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey BJXUC-LNCNY-YLPMA-HKJQD-RVVSUOM
 
   - hosts: bigip[1]
     tasks:
       - name: License Big-IP
-        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey YSGRE-ESFNJ-ISHMA-ARJYG-AXLGSZK
-
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey RAAWG-BITHU-GIYDE-EWSLR-QMPTTAT
 
 
 # Back up licenses
-#ZEODX-ARFNC-VQQYV-PKEGG-UANVJGQ
-# NLLLK-SVXNK-DOBPQ-MMKGR-UMTCFHK
-# UIKGF-YOYBU-UKNEY-BLSQJ-GBGIEVU
-# VBTDD-VYLLL-JZFEM-WUVQY-SKKZZAF
-# TXXRI-JKBDW-HKDSF-JNVBY-VFRERUN
-# TYUSG-XVTRD-NWNOL-RFLPG-KIIWIKO
-# GROVA-XAJAK-RXOLX-GTKZJ-FJJCYEX

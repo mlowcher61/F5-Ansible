@@ -5,18 +5,27 @@
   vars:
     username: admin
     password: admin
-    bigip: 10.0.0.40
+    bigip: bigip[0]
+    state: present
 
   tasks:
 
-   - name: Use a file lookup to import PEM Certificate
+   - name: Importing an SSL Certificate
      bigip_ssl_certificate:
        name: "kenkar2"
        server: "{{bigip}}"
        user: "{{username}}"
        password: "{{password}}"
-       state: "present"
-       cert_content: "{{ lookup('file', '/var/tmp/kenkar2.crt') }}"
-       key_content: "{{ lookup('file', '/var/tmp/kenkar2.key') }}"
+       state: "{{state}}"
+       content: "{{ lookup('file', '/var/tmp/kenkar2.crt') }}"
      delegate_to: localhost
 
+   - name: Importing an SSL key
+     bigip_ssl_key:
+       name: "kenkar2"
+       server: "{{bigip}}"
+       user: "{{username}}"
+       password: "{{password}}"
+       state: "{{state}}"
+       content: "{{ lookup('file', '/var/tmp/kenkar2.key') }}"
+     delegate_to: localhost

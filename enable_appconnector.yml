@@ -23,7 +23,7 @@
   connection: local
   gather_facts: no
   vars:
-    server1: "serv-center"
+    server1: "54.218.80.234"
     setup_user: "admin"
     setup_pass: "admin"
     app_connector: "app-connector-1.1.1-8.0.noarch.rpm"
