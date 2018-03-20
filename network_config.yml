@@ -1,0 +1,171 @@
+---
+
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      short_description: Playbook for creating route domains,
+#      vlans and selfips.
+
+- name: Starting the Layer 2 Network Config
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+   username: "admin"
+   password: "admin"
+   
+
+  tasks:
+
+  - name: Get facts from CSV file
+    csv_to_facts:
+      src: ./files/network_config.csv
+
+  - name: Creating the route domains on Device .15
+    bigip_routedomain:
+     id: "{{item.id}}"
+     user: "{{username}}"
+     password: "{{password}}"
+     validate_certs: False
+     server: "{{item.appliance}}"
+     state: "present"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes" 
+    delegate_to: localhost
+ 
+  - name: Creating the route domains on Device .16
+    bigip_routedomain:
+     id: "{{item.id}}"
+     user: "{{username}}"
+     password: "{{password}}"
+     validate_certs: False
+     server: "{{item.appliance}}"
+     state: "present"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "no"
+    delegate_to: localhost
+
+  - name: Configuring VLANs on Device .15
+    bigip_vlan:
+     server: "{{item.appliance}}"
+     user: "{{username}}"
+     password: "{{password}}"
+     validate_certs: False
+     name: "{{item.vlan}}"
+     tag: "{{item.tag}}"
+     tagged_interface: "{{item.interface}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+    delegate_to: localhost
+
+  - name: Configuring VLANs on Device .16
+    bigip_vlan:
+     server: "{{item.appliance}}"
+     user: "{{username}}"
+     password: "{{password}}"
+     validate_certs: False
+     name: "{{item.vlan}}"
+     tag: "{{item.tag}}"
+     tagged_interface: "{{item.interface}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "no"
+    delegate_to: localhost
+
+  - name: Setting the VLANs on the route domains for Device .15
+    bigip_routedomain:
+     id: "{{item.id}}"
+     user: "{{username}}"
+     password: "{{password}}"
+     validate_certs: False
+     server: "{{item.appliance}}"
+     state: "present"
+     vlans:
+         - "{{item.vlan}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+    delegate_to: localhost
+
+  - name: Setting the VLANs on the route domains for Device .16
+    bigip_routedomain:
+     id: "{{item.id}}"
+     user: "{{username}}"
+     password: "{{password}}"
+     validate_certs: False
+     server: "{{item.appliance}}"
+     state: "present"
+     vlans:
+         - "{{item.vlan}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "no"
+    delegate_to: localhost
+
+
+  - name: Configuring static SELF-IPs on Device .15
+    bigip_selfip:
+     server: "{{item.appliance}}"
+     user: "{{username}}"
+     password: "{{password}}"
+     validate_certs: False
+     name: "{{item.self_static_name}}"
+     address: "{{item.address_static}}"
+     netmask: "{{item.netmask}}"
+     route_domain: "{{item.id}}"
+     traffic_group: "{{tg_static}}"	
+     vlan: "{{item.vlan}}"
+     allow_service: "{{item.static_allow_service}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+    delegate_to: localhost
+
+  - name: Configuring static SELF-IPs on Device .16
+    bigip_selfip:
+     server: "{{item.appliance}}"
+     user: "{{username}}"
+     password: "{{password}}"
+     validate_certs: False
+     name: "{{item.self_static_name}}"
+     address: "{{item.address_static}}"
+     netmask: "{{item.netmask}}"
+     route_domain: "{{item.id}}"
+     traffic_group: "{{tg_static}}"
+     vlan: "{{item.vlan}}"
+     allow_service: "{{item.static_allow_service}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "no"
+    delegate_to: localhost
+
+  - name: Configuring floating SELF-IPs on Device .15
+    bigip_selfip:
+     server: "{{item.appliance}}"
+     user: "{{username}}"
+     password: "{{password}}"
+     validate_certs: False
+     name: "{{item.self_float_name}}"
+     address: "{{item.address_float}}"
+     netmask: "{{item.netmask}}"
+     route_domain: "{{item.id}}"
+     traffic_group: "{{tg_float}}"
+     vlan: "{{item.vlan}}"
+     allow_service: "{{item.float_allow_service}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+    delegate_to: localhost
+
+  - name: Configuring floating SELF-IPs on Device .16
+    bigip_selfip:
+     server: "{{item.appliance}}"
+     user: "{{username}}"
+     password: "{{password}}"
+     validate_certs: False
+     name: "{{item.self_float_name}}"
+     address: "{{item.address_float}}"
+     netmask: "{{item.netmask}}"
+     route_domain: "{{item.id}}"
+     traffic_group: "{{tg_float}}"
+     vlan: "{{item.vlan}}"
+     allow_service: "{{item.float_allow_service}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "no"
+    delegate_to: localhost
+

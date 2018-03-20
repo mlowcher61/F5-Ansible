@@ -1,0 +1,3 @@
+appliance,vlan,tag,interface
+10.0.0.177,vlan9,9,1.1
+10.0.0.177,vlan10,10,1.1

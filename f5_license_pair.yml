@@ -1,0 +1,33 @@
+---
+#State is not required when doing initial licensing. Uncomment state to get "latest" before upgrading software.
+#You must always go through the re-licensing process before upgrading software.
+
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    username: admin
+    password: admin
+    state: latest
+
+  tasks:
+
+   - name: Licensing the first F5 device
+     bigip_license:
+       server: 10.0.0.167
+       user: "{{username}}"
+       password: "{{password}}"
+       key: RAAWG-BITHU-GIYDE-EWSLR-QMPTTAT
+#       state: "{{state}}"
+       validate_certs: false
+     delegate_to: localhost
+
+   - name: Licensing the second F5 device
+     bigip_license:
+       server: 10.0.0.168
+       user: "{{username}}"
+       password: "{{password}}"
+       key: BJXUC-LNCNY-YLPMA-HKJQD-RVVSUOM
+#       state: "{{state}}"
+       validate_certs: false
+     delegate_to: localhost
