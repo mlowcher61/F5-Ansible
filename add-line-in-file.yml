@@ -1,9 +1,0 @@
----
-- hosts: bigip
-  tasks:
-    - name: Add hostname to config
-      lineinfile:
-        path: /config/hostname.conf
-        regex: ^Hostname=.*
-        insertafter: ^# Hostname=
-        line: Hostname=worddammit 

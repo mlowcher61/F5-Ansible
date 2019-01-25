@@ -1,6 +1,0 @@
----
-  - hosts: bigip[0]
-    tasks:
-      - name: License Big-IP
-        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey FNLDB-XYJPG-RHPSH-TYMBK-PBJLKAJ
-

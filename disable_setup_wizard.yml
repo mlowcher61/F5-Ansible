@@ -1,5 +1,0 @@
----
-  - hosts: bigip
-    tasks:
-      - name: Disable Setup Wizard
-        raw: tmsh modify sys global-settings gui-setup disabled

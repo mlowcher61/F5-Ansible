@@ -1,8 +1,0 @@
----
-- hosts: bigip
-  tasks:
-    - name: create the enable file if it doesn't exist
-      file:
-       state: touch
-       path: /var/config/rest/iapps/enable
-
