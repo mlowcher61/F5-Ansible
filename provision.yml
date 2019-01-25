@@ -1,0 +1,29 @@
+---
+- name: Provisioning ASM
+  hosts: localhost
+  gather_facts: false
+  vars:
+   username: admin
+<<<<<<< HEAD
+   password: Kenkar@00
+   server: 192.168.0.24 
+=======
+   password: admin
+   server: 10.0.0.167 
+>>>>>>> bd216033c94b963f0a35f336b6189ae8c7eb0cf6
+   module: asm
+   level: nominal
+
+
+  tasks:
+
+  - name: Provision BIG-IP with appropriate modules
+    bigip_provision:
+      server: "{{server }}"
+      user: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+      module: "{{module}}"
+      level: "{{level}}"
+    tags: provision
+    delegate_to: localhost

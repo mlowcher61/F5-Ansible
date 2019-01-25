@@ -1,0 +1,43 @@
+---
+#      Copyright (c) 2017 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will execute a tcpdump capture on a remote F5  
+#      for the desired amount of time. It will then stop the capture, compress it,
+#      bring it down to your Ansible machine and delete the capture from the 
+#      remote F5.
+#      Set the "time" variable for the number of seconds you want to run the capture.
+#      If you select greater than 60 seconds, then change the "pause: minutes"
+#      accordingly.
+
+
+- name: F5 Setup
+  hosts: serv-center
+  connection: local
+  gather_facts: no
+  vars:
+     vlan: "external" # vlan name or 0.0 to capture from all interfaces
+     filter: "not icmp" # create any pre-filter you'd like
+     cap_file: "packet_capture_serv-center_not_icmp.pcap"
+     time: "60"
+ 
+  tasks:
+    - name: start tcpdump
+      command: /usr/sbin/tcpdump -ni "{{ vlan }}" -s 0 "{{ filter }}" -w /tmp/"{{ cap_file }}"
+      async: "{{ time }}"
+      poll: 0
+ 
+    - pause: minutes=1 prompt="pause for "{{ time }}" seconds or press Ctrl + c then c to continue"
+ 
+    - name: kill tcpdump
+      command: /usr/bin/pkill tcpdump
+ 
+    - name: compress capture file
+      command: gzip "{{ cap_file }}" chdir=/tmp
+ 
+    - name: copy packet capture to local box
+      fetch: src=/tmp/"{{ cap_file }}".gz dest=/tmp/ flat=yes
+ 
+#    - name: delete capture file from F5
+#      file: path=/tmp/{{ cap_file }}.gz state=absent

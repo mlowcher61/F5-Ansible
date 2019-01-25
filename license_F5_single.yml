@@ -1,0 +1,13 @@
+---
+<<<<<<< HEAD
+  - hosts: bigip[0]
+    tasks:
+      - name: License Big-IP
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey FNLDB-XYJPG-RHPSH-TYMBK-PBJLKAJ
+=======
+  - hosts: bigip[1]
+    tasks:
+      - name: License Big-IP
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey GROVA-XAJAK-RXOLX-GTKZJ-FJJCYEX
+>>>>>>> bd216033c94b963f0a35f336b6189ae8c7eb0cf6
+
