@@ -1,0 +1,16 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will push jq to the loadbalancers. Jq is a utility
+#      that will parse JSON data to make it more readable. It is useful for browsing APIs. 
+#      Example:  curl -sku admin:admin https://localhost/mgmt/tm/ltm/profile/http | jq .items
+
+   - hosts: loadbalancer
+
+     tasks:
+       - name: push irules
+         copy: src=/home/lowcher/app_svc_L4-7/f5-app-srv-iapp-2.0.004/bundled/irules/ dest=/config/ mode=755      

@@ -1,0 +1,34 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a snatpool with the 
+#      ip addresses you specify. "State" should be set to "present" 
+#      to create the snatpool and to "absent" to delete it.
+
+- name: Connecting...
+  hosts: "10.0.0.160"
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.160"
+    snatpool: "app2-snatpool"
+
+  tasks: 
+
+   - name: Add the SNAT pool "{{snatpool}}"
+     bigip_snat_pool:
+         server: "{{appliance}}"
+         user: "{{setup_user}}"
+         password: "{{setup_pass}}"
+         state: "present"
+         name: "{{snatpool}}"
+         members:
+             - 10.10.10.10
+             - 10.10.10.11
+     delegate_to: localhost

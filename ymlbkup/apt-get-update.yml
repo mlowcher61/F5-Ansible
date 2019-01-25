@@ -1,0 +1,23 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will perform the steps to configure
+
+- name: Connecting...	
+  hosts: acproxy[0]
+  sudo: yes
+  connection: local
+  gather_facts: no
+  vars:
+    appliance: "acproxy[0]"
+    setup_user: "ubuntu"
+    setup_pass: "acproxy"
+
+  tasks:
+   - name: Updating apt
+     shell: apt-get update
+     sudo: yes

@@ -1,0 +1,119 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a pool with two members
+#      attached to an ssl offload vip. It will also create a redirect vip
+#      to make sure people get to the 443 vip. 
+#      Create your child profiles and monitors first and change the names
+#      in this playbook accordingly. The profiles used for the redirect
+#      vip can remain unchanged.
+#      Requires Ansible 2.3 or higher
+
+- name: Create a VIP, pool, members and nodes
+  hosts: 10.0.0.160
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+
+  tasks:
+  - name: Get facts from CSV file
+    csv_to_facts:
+      src: ./files/multiple_ssl_redirect.csv
+
+  - name: Create a pool
+    bigip_pool:
+        lb_method: "{{item.lb_method}}"
+        monitors: "{{item.monitor}}"
+        name: "{{item.poolname}}"
+        password: "{{setup_pass}}"
+        server: "{{appliance}}"
+        slow_ramp_time: "120"
+        user: "{{setup_user}}"
+        validate_certs: "no"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+    delegate_to: localhost
+
+  - name: Create node1
+    bigip_node:
+        host: "{{item.node1}}"
+        name: "{{item.node1name}}"
+        password: "{{setup_pass}}"
+        server: "{{appliance}}"
+        user: "{{setup_user}}"
+        validate_certs: "no"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+    delegate_to: localhost
+
+  - name: Create node2
+    bigip_node:
+        host: "{{item.node2}}"
+        name: "{{item.node2name}}"
+        password: "admin"
+        server: "{{appliance}}"
+        user: "admin"
+        validate_certs: "no"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+    delegate_to: localhost
+
+  - name: Add nodes to pool
+    bigip_pool_member:
+        password: "admin"
+        pool: "{{item.poolname}}"
+        port: "80"
+        server: "{{appliance}}"
+        user: "admin"
+        validate_certs: "no"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+    delegate_to: localhost
+    with_items:
+        - host: "{{item.node1}}"
+          name: "{{item.node1name}}"
+        - host: "{{item.node2}}"
+          name: "{{item.node2name}}"
+
+  - name: Create a VIP
+    bigip_virtual_server:
+        description: "{{item.vipname}}"
+        destination: "{{item.vip_ip}}"
+        password: "admin"
+        name: "{{item.vipname}}"
+        pool: "{{item.poolname}}"
+        port: "443"
+        server: "{{appliance}}"
+        snat: "Automap"
+        user: "admin"
+        all_profiles:
+            - "{{item.http_profile}}"
+            - "{{item.clientssl}}"
+        validate_certs: "no"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+    delegate_to: localhost
+
+  - name: Create a redirect virtual server
+    bigip_virtual_server:
+        description: "Redirect Virtual Server"
+        server: "{{appliance}}"
+        user: "admin"
+        password: "admin"
+        name: "{{item.http_redirect}}"
+        destination: "{{item.vip_ip}}" 
+        port: 80
+        all_profiles:
+            - http
+        all_rules:
+            - _sys_https_redirect   
+        validate_certs: "no"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes" 
+    delegate_to: localhost

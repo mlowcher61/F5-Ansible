@@ -1,0 +1,162 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will read a CSV file for variables and create 
+#      a gslb configuration. This playbook assumes that vlans and self-ips are 
+#      already in place. If gslb will be configured on the standby unit as well, 
+#      uncomment the config-sync play at the bottom of this playbook.
+#      Whether GSLB is configured on one device in a pair or both, you will need
+#      to provision DNS (GTM) on both devices. This playbook will perform the following.
+#      - Create two listeners. A TCP and a UDP listener.
+#      - Create two datacenters.
+#      - Add a server object to both datacenters
+#      - Add one virtual server to each server object
+#      - Create the GSLB pool with the two virtual servers
+#      - Create the wideip with the GSLB pool attached.
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    
+  tasks:
+  - name: Pulling variables from ./files/gslb.csv
+    csv_to_facts:
+      src: ./files/gslb.csv
+
+  - name: Adding a UDP GTM listener
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/listener"
+      body: '{"name":"{{item.udp_name}}","address":"{{item.listener_address}}","ipProtocol":"udp"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+    
+  - name: Adding a TCP GTM listener
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/listener"
+      body: '{"name":"{{item.tcp_name}}","address":"{{item.listener_address}}","ipProtocol":"tcp"}'     
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+
+  - name: Defining the "{{datacenter1}}" datacenter
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/datacenter"
+      body: '{"name":"{{item.datacenter1}}","location":"{{item.datacenter1}}"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+
+  - name: Defining the "{{datacenter2}}" datacenter
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/datacenter"
+      body: '{"name":"{{item.datacenter2}}","location":"{{item.datacenter2}}"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"
+
+  - name: Wait 5 seconds before continuing
+    wait_for:
+      timeout: 5
+
+  - name: Adding server object
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/server"
+      body: '{"name":"{{item.server_object1}}","datacenter":"{{item.datacenter1}}","monitor":"/Common/bigip","product":"single-bigip","addresses":[{"name":"{{item.server_object1_self}}","deviceName":"{{item.deviceName1}}"}]}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Adding a virtual server to the "{{item.server_object1}}" server object
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/server/~Common~gtm-ltm-dallas/virtual-servers"
+      body: '{"name":"{{item.vip1_name}}","destination":"{{item.vip1_ipport}}","monitor":"/Common/gateway_icmp"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Adding second server object
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/server"
+      body: '{"name":"{{item.server_object2}}","datacenter":"{{item.datacenter2}}","monitor":"/Common/bigip","product":"single-bigip","addresses":[{"name":"{{item.server_object2_self}}","deviceName":"{{item.deviceName2}}"}]}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Adding a virtual server to the "{{item.server_object2}}" server object
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/server/~Common~"{{item.server_object2}}"/virtual-servers"
+      body: '{"name":"{{item.vip2_name}}","destination":"{{item.vip2_ipport}}","monitor":"/Common/gateway_icmp"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Adding first GTM pool
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/pool/a"
+      body: '{"name":"{{item.app1_pool}}"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Adding members to "{{item.app1_pool}}"
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/pool/a/~Common~"{{app1_pool}}"/members"
+      body: '{"name":"{{server_object1}}":app1","members":"~Common~"{{item.server_object1}}"/app1"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Adding wide-ip
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/gtm/wideip/a"
+      body: '{"name":"{{wideip}}","pools":[ {"name":"{{app1_pool}}"}]}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+#  - name: Config Sync
+#    icontrol_install_config:
+#      uri: "mgmt/tm/cm/"
+#      body: '{"command":"run","utilCmdArgs":"config-sync to-group SyncFail"}'
+#      host: "{{item.appliance}}"
+#      username: "{{setup_user}}"
+#      password: "{{setup_pass}}"
+#    with_items: "{{spreadsheet}}"
+#    when: item.primary == "yes"
+    

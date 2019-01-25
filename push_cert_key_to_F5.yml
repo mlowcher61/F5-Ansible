@@ -1,0 +1,33 @@
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will push a certificate and key 
+#      to the selected host.
+#      Edit the attributes accordingly.
+#      :%s/oldstring/newstring/g
+#      
+
+- name: Push PEM Certificate and key
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  vars:
+    setup_user: admin
+    setup_pass: admin
+    bigip: 10.0.0.40
+
+  tasks: 
+   - name: Pushing the certificate and key to the F5
+     bigip_ssl_certificate:
+         state: "present"
+         server: "{{bigip}}"
+         user: "{{setup_user}}"
+         password: "{{setup_pass}}"
+         name: "kenyon2"
+         cert_src: "/var/tmp/kenyon2.crt"
+         key_src: "/var/tmp/kenyon2.key"
+         validate_certs: "no"
+     delegate_to: localhost

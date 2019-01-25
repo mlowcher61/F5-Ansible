@@ -1,0 +1,54 @@
+#!/usr/bin/ansible-playbook
+---
+      
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      short_description: This playbook will add allowed urls
+#      to an ASM policy. 
+#      The api call cannot use the actual name of the policy.
+#      Do the following curl command piped to jq from the CLI of the F5.
+#      curl -sku admin:admin https://<ip address of F5 management>/mgmt/tm/asm/policies | jq .items 
+#      Match your desired policy name with the long string needed for the api call
+#      See the UOBxa66WFloQwonbHg3Rlw example below.
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    appliance: 10.0.0.180
+    setup_user: "admin"
+    setup_pass: "admin"
+    
+  tasks:
+
+  - name: Making a change to the brute-force-attack-protections feature 
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/asm/policies/w6aisnQUTedAnegkM1tniA/brute-force-attack-protections"
+      body: '{"loginAttemptsFromTheSameClient":"10",
+    "preventionPolicy": {
+      "urlBasedRateLimiting": "true",
+      "sourceIpBasedRateLimiting": "true",
+      "sourceIpBasedClientSideIntegrityDefense": "false",
+      "urlBasedClientSideIntegrityDefense": "false"}}'
+#    },"suspiciousCriteria": {
+#      "failedLoginAttemptsIncreasePercent": 500,
+#      "failedLoginAttemptsRateReached": 20,
+#       "detectionCriteria": {
+#      "failedLoginAttemptsIncreasePercent": 500,
+#      "minimumFailedLoginAttempts": 20,
+#      "failedLoginAttemptsRateReached": 100
+#    },
+#    "reEnableLoginAfter": 600,
+#    "preventionDuration": "unlimited",
+#    "measurementPeriod": 1,
+#    "block": false,
+#    "alarm": true,
+#    "useDeviceId": false,
+#    "bruteForceProtectionForAllLoginPages": true}}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"

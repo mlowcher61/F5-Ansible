@@ -1,0 +1,41 @@
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a clientssl profile.
+#      You must first use the push_cert_key_to_F5 playbook to push the certificate and key
+#      files to the desired F5 first. 
+#      Change the variables accordingly.
+#      :%s/kenyon2/new_name/g 
+
+- name: F5 Setup
+  hosts: 10.0.0.164
+  connection: local
+  gather_facts: no
+  vars:
+    username: "admin"
+    password: "admin"
+    bigip: "10.0.0.164"
+    cert: "kenkar2"
+    key: "kenkar2" 
+    clientssl: "kenkar2_clientssl"
+    
+  tasks:
+
+   - name: Create a client SSL profile with a cert/key/specific ciphers
+     bigip_profile_client_ssl:
+      state: present
+      server: "{{bigip}}"
+      user: "{{username}}"
+      password: "{{password}}"
+      ciphers: "!SSLv3:!SSLv2:ECDHE+AES-GCM+SHA256:ECDHE-RSA-AES128-CBC-SHA"
+      name: "{{clientssl}}"
+      validate_certs: False
+      cert_key_chain:
+        - cert: "{{cert}}"
+          key: "{{key}}"
+#          chain: "{{cert}}"
+     delegate_to: localhost

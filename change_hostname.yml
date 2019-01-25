@@ -1,0 +1,38 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      short_description: Setup Wizard 
+#      description: This playbook will set the hostname and time zone
+#      on the F5 and disable the setup wizard. 
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    
+  tasks:
+  - name: Change Local Device Name A
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/cm/device"
+      body: '{"command":"mv","name":"bigip1","target":"big13.home.com"}'
+      host: "10.0.0.185"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    
+#  - name: Create NTP Servers
+#    icontrol_install_config: 
+#      uri: "/mgmt/tm/sys/ntp"
+#      method: PATCH
+#      body: '{"servers":["time.nist.gov","utcnist.colorado.edu"],"timezone":"America/Chicago"}'
+#      host: "{{appliance}}"
+#      username: "{{setup_user}}"
+#      password: "{{setup_pass}}"

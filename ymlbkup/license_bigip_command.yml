@@ -1,0 +1,40 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will license two F5 devices.
+#
+
+- name: Connecting...
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+   appliance1: 10.0.0.185
+   appliance2: 10.0.0.186
+   setup_user: admin
+   setup_pass: admin
+   regkey1: WHDQH-HZNMC-BQCBP-HPBIS-ZWOXMGA
+   regkey2: WHDQH-HZNMC-BQCBP-HPBIS-ZWOXMGA
+
+  tasks:
+  - name: Licensing first device
+    bigip_command:
+      server: "{{appliance1}}"
+      user: "{{setup_user}}"
+      password: "{{setup_pass}}"
+      commands:
+      - /usr/local/bin/SOAPLicenseClient --interactive  --basekey "{{regkey1}}"
+    delegate_to: localhost
+
+  - name: Licensing second device
+    bigip_command:
+      server: "{{appliance2}}"
+      user: "admin"
+      password: "admin"
+      commands:
+      - /usr/local/bin/SOAPLicenseClient --interactive  --basekey "{{regkey2}}"
+    delegate_to: localhost

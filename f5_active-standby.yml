@@ -1,0 +1,375 @@
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create an HA configuration
+#      on two newly licensed devices.
+#
+
+- name: Set up a BIG-IP HA pair
+  hosts: bigip
+  gather_facts: false
+
+  vars:
+   bigip1: 10.1.0.20
+   bigip2: 10.1.0.21
+   hostname1: bigip-f.agility.f5demo.net 
+   hostname2: bigip-s.agility.f5demo.net  
+   external_vlan: external_vlan
+   internal_vlan: internal_vlan
+   ha_vlan: ha_vlan
+   external_self_name: external_self
+   internal_self_name: internal_self
+   external_self_float_name: external_self_float
+   internal_self_float_name: internal_self_float
+   ha_self_name: ha_self
+   external_self_1: 20.20.20.20
+   external_self_2: 20.20.20.21
+   external_self_float: 20.20.20.22
+   external_tag: 20
+   internal_self_1: 10.10.10.10
+   internal_self_2: 10.10.10.11
+   internal_self_float: 10.10.10.12
+   internal_tag: 10 
+   ext_netmask: 255.255.255.0
+   int_netmask: 255.255.255.0
+   ha_netmask: 255.255.255.252
+   ha_self_1: 1.1.1.1
+   ha_self_2: 1.1.1.2
+   name_server_1: 64.65.64.65
+   name_server_2: 8.8.8.8
+   setup_user: admin
+   setup_pass: admin
+   state: present
+# Change the state above to "absent" to remove object(s)
+
+  tasks:
+  
+  - name: Change device name of BIGIP1
+    bigip_hostname:
+      hostname: "{{ hostname1 }}"
+      password: "{{ setup_pass }}"
+      server: "{{ bigip1 }}"
+      user: "{{ setup_user }}"
+      validate_certs: no
+    delegate_to: localhost
+
+  - name: Change device name of BIGIP2
+    bigip_hostname:
+      hostname: "{{ hostname2 }}"
+      password: "{{ setup_pass }}"
+      server: "{{ bigip2 }}"
+      user: "{{ setup_user }}"
+      validate_certs: no
+    delegate_to: localhost
+
+  - name: Disabling the setup utility on both devices
+    bigip_sys_global:
+     gui_setup: "disabled"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - server: "{{ bigip2 }}"
+
+  - name: Creating external vlans on both devices
+    bigip_vlan:
+     name: "{{ external_vlan }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     tag: "{{ external_tag }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - server: "{{ bigip2 }}"
+
+  - name: Creating internal vlans on both devices
+    bigip_vlan:
+     name: "{{ internal_vlan }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     tag: "{{ internal_tag }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - server: "{{ bigip2 }}"
+
+  - name: Creating HA vlan on both devices
+    bigip_vlan:
+     name: "{{ ha_vlan }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - server: "{{ bigip2 }}"
+
+  - name: Adding external vlan as untagged to interface 1.1 on both devices
+    bigip_vlan:
+     untagged_interfaces: 1.1
+     name: "{{ external_vlan }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - server: "{{ bigip2 }}"
+    
+  - name: Adding internal vlan as untagged to interface 1.2 on both devices
+    bigip_vlan:
+     untagged_interfaces: 1.2
+     name: "{{ internal_vlan }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - server: "{{ bigip2 }}"
+
+  - name: Adding HA vlan as untagged to interface 1.3 on both devices
+    bigip_vlan:
+     untagged_interfaces: 1.3
+     name: "{{ ha_vlan }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - server: "{{ bigip2 }}"
+
+  - name: Creating external self ip on both device
+    bigip_selfip:
+     name: "{{ external_self_name }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     pass: "{{ setup_pass }}"
+     address: "{{ item.address }}"
+     vlan: "{{ external_vlan }}"
+     traffic_group: "traffic-group-local-only"
+     netmask: "{{ ext_netmask }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+             address: "{{ external_self_1 }}"
+           - server: "{{ bigip2 }}"
+             address: "{{ external_self_2 }}" 
+
+  - name: Creating external floating self ip on both devices
+    bigip_selfip:
+     name: "{{ external_self_float_name }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     pass: "{{ setup_pass }}"
+     address: "{{ external_self_float }}"
+     vlan: "{{ external_vlan }}"
+     traffic_group: "traffic-group-1"
+     netmask: "{{ ext_netmask }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - server: "{{ bigip2 }}"  
+
+  - name: Creating internal self ip on both devices
+    bigip_selfip:
+     name: "{{ internal_self_name }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     pass: "{{ setup_pass }}"
+     address: "{{ item.address }}"
+     vlan: "{{ internal_vlan }}"
+     traffic_group: "traffic-group-local-only"
+     netmask: "{{ int_netmask }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+             address: "{{ internal_self_1 }}"
+           - server: "{{ bigip2 }}"
+             address: "{{ internal_self_2 }}"
+
+  - name: Creating internal floating self ip on both devices
+    bigip_selfip:
+     name: "{{ internal_self_float_name }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     pass: "{{ setup_pass }}"
+     address: "{{ internal_self_float }}"
+     vlan: "{{ internal_vlan }}"
+     traffic_group: "traffic-group-1"
+     netmask: "{{ int_netmask }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - server: "{{ bigip2 }}"
+
+  - name: Creating HA self ip on both devices
+    bigip_selfip:
+     name: "{{ ha_self_name }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     pass: "{{ setup_pass }}"
+     address: "{{ item.address }}"
+     vlan: "{{ ha_vlan }}"
+     traffic_group: "traffic-group-local-only"
+     netmask: "{{ ha_netmask }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+             address: "{{ ha_self_1 }}"
+           - server: "{{ bigip2 }}"
+             address: "{{ ha_self_2 }}"
+  
+#  - name: Configuring DNS servers
+#    bigip_device_dns:
+#     name_servers:
+#         - "{{ name_server_1 }}"
+#         - "{{ name_server_2 }}"
+#     search:
+#         - localdomain
+#         - lab.local
+#     state: present
+#     server: "{{ item.server }}"
+#     user: "{{ setup_user }}"
+#     pass: "{{ setup_pass }}"
+#     validate_certs: no
+#    delegate_to: localhost
+#    with_items:
+#           - server: "{{ bigip1 }}"
+#           - server: "{{ bigip2 }}"
+
+  - name: Configuring NTP servers
+    bigip_device_ntp:
+     ntp_servers:
+        - "192.0.2.23"
+     timezone: "America/Chicago"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     pass: "{{ setup_pass }}"
+     state: present
+     validate_certs: "no"
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - server: "{{ bigip2 }}"
+
+  - name: Set the banner for the SSHD service from a file
+    bigip_device_sshd:
+     banner: enabled
+     banner_text: "{{ lookup('file', '/var/tmp/SSHD-banner.txt') }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     pass: "{{ setup_pass }}"
+     validate_certs: "no"
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - server: "{{ bigip2 }}"
+
+  - name: Set config sync addresses on BIGIP1
+    bigip_device_connectivity:
+     config_sync_ip: "{{ ha_self_1 }}"
+     mirror_primary_address: "{{ ha_self_1 }}"
+     unicast_failover:
+       - address: management-ip
+       - address: "{{ ha_self_1 }}"
+     server: "{{ bigip1 }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     validate_certs: "no"
+    delegate_to: localhost    
+
+  - name: Set config sync addresses on BIGIP2
+    bigip_device_connectivity:
+     config_sync_ip: "{{ ha_self_2 }}"
+     mirror_primary_address: "{{ ha_self_2 }}"
+     unicast_failover:
+       - address: management-ip
+       - address: "{{ ha_self_2 }}"
+     server: "{{ bigip2 }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     validate_certs: "no"
+    delegate_to: localhost
+
+  - name: Create a sync-failover device group
+    bigip_device_group:
+     name: sync-failover
+     auto_sync: no
+     password: "{{ setup_pass }}"
+     server: "{{ item.server }}"
+     type: sync-failover
+     state: present
+     user: "{{ setup_user }}"
+     validate_certs: "no"
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - server: "{{ bigip2 }}"
+
+  - name: Add trust for second device to Active device
+    bigip_device_trust:
+      server: "{{ bigip1 }}"
+      user: "{{ setup_user }}"
+      password: "{{ setup_pass }}"
+      peer_server: "{{ bigip2 }}"
+      peer_hostname: "{{ hostname2 }}"
+      peer_user: "{{ setup_user }}"
+      peer_password: "{{ setup_pass }}"
+      validate_certs: "no"
+    delegate_to: localhost
+
+  - name: Add the current device to the "sync-failover" device group
+    bigip_device_group_member:
+     name: "{{ item.server }}"
+     device_group: sync-failover
+     password: "{{ setup_pass }}"
+     server: "{{ inventory_hostname }}"
+     state: present
+     user: "{{ setup_user }}"
+     validate_certs: "no"
+    delegate_to: localhost
+    with_items:
+           - server: "{{ hostname1 }}"
+           - server: "{{ hostname2 }}"
+
+#  - name: Perform an initial sync of a device to the sync-failover group
+#    bigip_configsync_action:
+#     device_group: sync-failover
+#     sync_device_to_group: yes
+#     server: "{{ bigip1 }}"
+#     user: "{{ setup_user }}"
+#     password: "{{ setup_pass }}"
+#     validate_certs: "no"
+#    delegate_to: localhost
+
+  #- name: Confirm HA pair is formed
+  #  bigip_command:
+  #   server: "{{ bigip1 }}"
+  #   user: "{{ setup_user }}"
+  #   password: "{{ setup_pass }}"
+  #   commands:
+  #    - show cm sync-status
+  #   wait_for:
+  #    - result[0] contains "high-availability"
+  #  delegate_to: localhost

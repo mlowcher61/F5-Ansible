@@ -1,0 +1,31 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    username: admin
+    password: admin
+    bigip: bigip[0]
+    state: present
+
+  tasks:
+
+   - name: Importing an SSL Certificate
+     bigip_ssl_certificate:
+       name: "kenkar2"
+       server: "{{bigip}}"
+       user: "{{username}}"
+       password: "{{password}}"
+       state: "{{state}}"
+       content: "{{ lookup('file', '/var/tmp/kenkar2.crt') }}"
+     delegate_to: localhost
+
+   - name: Importing an SSL key
+     bigip_ssl_key:
+       name: "kenkar2"
+       server: "{{bigip}}"
+       user: "{{username}}"
+       password: "{{password}}"
+       state: "{{state}}"
+       content: "{{ lookup('file', '/var/tmp/kenkar2.key') }}"
+     delegate_to: localhost

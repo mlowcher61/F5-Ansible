@@ -1,0 +1,84 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will either
+#      upload, upload and install, upload and install without the license
+#      upload, install no license, no platform check or delete a .ucs file. 
+#      Set the vars accordingly and uncomment the play you want to execute.
+#      The ucs needs to be in the /tmp directory of your Ansible host.
+#      This ofcourse can be changed down below.
+
+- name: Upload UCS
+  hosts: 10.0.0.157
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.157"
+    ucs_name: "test.ucs"
+    passphrase: "MyPassphrase1234"
+
+  tasks:
+    - name: Upload UCS file
+      bigip_ucs:
+          server: "10.0.0.157"
+          user: "admin"
+          password: "admin"
+          ucs: "/tmp/test.ucs"
+          state: "present"
+          validate_certs: "no"
+      delegate_to: localhost
+
+#    - name: Install (upload, install) UCS.
+#      bigip_ucs:
+#          server: "{{appliance}}"
+#          user: "{{setup_user}}"
+#          password: "{{setup_pass}}"
+#          ucs: "/tmp/"{{ucs_name}}"
+#          state: "installed"
+#      delegate_to: localhost
+#
+#    - name: Install (upload, install) UCS without installing the license portion
+#      bigip_ucs:
+#          server: "{{appliance}}"
+#          user: "{{setup_user}}"
+#          password: "{{setup_pass}}"
+#          ucs: "/tmp/"{{ucs_name}}"
+#          state: "installed"
+#          no_license: "yes"
+#      delegate_to: localhost
+#
+#    - name: Install (upload, install) UCS except the license, and bypassing the platform check
+#      bigip_ucs:
+#          server: "{{appliance}}"
+#          user: "{{setup_user}}"
+#          password: "{{setup_pass}}"
+#          ucs: "/tmp/"{{ucs_name}}" 
+#          state: "installed"
+#          no_license: "yes"
+#          no_platform_check: "yes"
+#      delegate_to: localhost
+#
+#    - name: Install (upload, install) UCS using a passphrase necessary to load the UCS
+#      bigip_ucs:
+#          server: "{{appliance}}"
+#          user: "{{setup_user}}"
+#          password: "{{setup_pass}}"
+#          ucs: "/tmp/"{{ucs_name}}" 
+#          state: "installed"
+#          passphrase: "{{passphrase}}"
+#      delegate_to: localhost
+#
+#    - name: Remove uploaded UCS file
+#      bigip_ucs:
+#          server: "{{appliance}}"
+#          user: "{{setup_user}}"
+#          password: "{{setup_pass}}"
+#          ucs: "/tmp/"{{ucs_name}}" 
+#          state: "absent"
+#      delegate_to: localhost 

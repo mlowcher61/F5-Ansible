@@ -1,0 +1,32 @@
+#!/usr/bin/ansible-playbook
+---
+      
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      short_description: Run this playbook to download
+#      an ssldump of traffic on the big-ip 
+#~~~~~~~~~~~~~~~~~~
+# WORK IN PROGRESS
+#~~~~~~~~~~~~~~~~~~
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    
+  tasks:
+
+  - name: Retrieving ssldump
+    icontrol_install_config: 
+      method: "GET"
+      uri: "/mgmt/tm/util/ssldump"
+      body: '{"command":"mv","name":"bigip1","target":"{{item.hostname}}"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: 

@@ -1,0 +1,25 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will upload the specified software and
+#      hotfix to the specified host.
+#      Edit the attributes accordingly.
+
+- name: Upload base image and hotfix to host
+  hosts: "10.0.0.174"
+  connection: local
+
+  tasks: 
+   - name: Uploading base image and hotfix
+     bigip_software:
+         state: "present"
+         server: "10.0.0.174"
+         user: "admin"
+         password: "admin"
+         software: "/root/BIGIP-12.1.2.
+         hotfix: "/root/BIGIP-12.1.2
+     delegate_to: localhost

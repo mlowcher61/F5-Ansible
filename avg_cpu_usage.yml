@@ -1,0 +1,28 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 World Wide Technology, Inc. 
+#      All rights reserved. 
+#
+#      author: Mark Wall  World Wide Technology
+#      short_description: Running bash commands from within Ansible
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.166"
+    
+  tasks:
+  - name: Change Local Device Name 
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/util/bash"
+      body: '{"command":"run","utilCmdArgs":"-c 'mpstat'"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"

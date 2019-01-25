@@ -1,0 +1,5 @@
+appliance,primary,id,vlan,tag,interface,self_static_name,address_static,netmask,tg_static,static_allow_service,self_float_name,address_float,tg_float,float_allow_service
+10.0.0.177,yes,1,vlan9,9,1.1,vlan9_static,10.187.1.98,255.255.255.0,traffic-group-local-only,none,vlan9_float,10.187.1.100,traffic-group-1,default
+10.0.0.177,yes,0,vlan10,10,1.1,vlan10_static,10.187.2.98,255.255.255.0,traffic-group-local-only,none,vlan10_float,10.187.2.100,traffic-group-1,default
+10.0.0.178,no,0,vlan9,9,1.1,vlan9_static,10.187.1.99,255.255.255.0,traffic-group-local-only,none,vlan9_float,10.187.1.100,traffic-group-1,default
+10.0.0.178,no,0,vlan10,10,1.1,vlan10_static,10.187.2.99,255.255.255.0,traffic-group-local-only,none,vlan10_float,10.187.2.100,traffic-group-1,default

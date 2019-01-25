@@ -1,0 +1,7 @@
+---
+  - hosts: loadbalancer
+    tasks:
+      - name: Provision LTM and GTM 	
+        raw: "tmsh modify sys provision ltm level nominal" 
+        raw: "tmsh modify sys provision gtm level nominal"
+

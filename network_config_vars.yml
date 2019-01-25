@@ -1,0 +1,78 @@
+username: admin
+password: admin
+
+
+vlan_information:
+ - name: 'vlan9'
+   tag: '9'
+   interface: '1.1'
+   id: '1'
+ - name: 'vlan10'
+   tag: '10'
+   interface: '1.1'
+   id: '2'
+ - name: 'vlan11'
+   tag: '11'
+   interface: '1.1'
+   id: '1'
+ - name: 'vlan12'
+   tag: '12'
+   interface: '1.1'
+   id: '3'
+
+selfip_information:
+ - name: 'vlan9_static'
+   address: '10.168.68.5'
+   netmask: '255.255.255.0'
+   vlan: 'vlan9'
+   id: '1'
+   traffic_group: 'traffic-group-local-only'
+
+ - name: 'vlan9_float'
+   address: '10.168.68.7'
+   netmask: '255.255.255.0'
+   vlan: 'vlan9'
+   id: '1'
+   traffic_group: traffic-group-1
+
+ - name: 'vlan10_static'
+   address: '10.168.67.5'
+   netmask: '255.255.255.0'
+   vlan: 'vlan10'
+   id: '2'
+   traffic_group: 'traffic-group-local-only'
+
+ - name: 'vlan10_float'
+   address: '10.168.67.7'
+   netmask: '255.255.255.0'
+   vlan: 'vlan10'
+   id: '2'
+   traffic_group: traffic-group-1
+
+ - name: 'vlan11_static'
+   address: '10.168.66.5'
+   netmask: '255.255.255.0'
+   vlan: 'vlan11'
+   id: '1'
+   traffic_group: 'traffic-group-local-only'
+
+ - name: 'vlan11_float'
+   address: '10.168.66.7'
+   netmask: '255.255.255.0'
+   vlan: 'vlan11'
+   id: '1'
+   traffic_group: traffic-group-1
+
+ - name: 'vlan12_static'
+   address: '10.168.65.5'
+   netmask: '255.255.255.0'
+   vlan: 'vlan12'
+   id: '3'
+   traffic_group: 'traffic-group-local-only'
+
+ - name: 'vlan12_float'
+   address: '10.168.65.7'
+   netmask: '255.255.255.0'
+   vlan: 'vlan12'
+   id: '3'
+   traffic_group: traffic-group-1

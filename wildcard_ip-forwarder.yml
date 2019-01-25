@@ -1,0 +1,33 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a wildcard IP-forwarding vip.
+#      If snatting is not required change "automap" to "none"
+#      By default the forwarding vip will listen for traffic on all vlans.
+#      If you wish to only listen on specific vlans add the following to the "body" line.
+#      "vlans": ["/Common/<desired vlan name>"]
+
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.157"
+    wild_vip: "wildcard_forwarder"
+
+  tasks:
+  - name: Adding a wildcard forwarding vip
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/ltm/virtual"
+      body: '{"name":"{{wild_vip}}","destination":"0.0.0.0:0","ipForward": true,"sourceAddressTranslation":{"type":"automap"}}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"

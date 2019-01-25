@@ -1,0 +1,30 @@
+#!/usr/bin/ansible-playbook gtmpool.yml
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will read a CSV file for variables and create a GTM pool. This playbook assumes that vlans and self-ips are already in place. Listeners, datacenters and server objects must also already be configured. If gslb will be configured on the standby unit as well, uncomment the config-sync session at the bottom of this playbook.
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.164"
+    
+  tasks:
+
+  - name: Create a DNS resolver
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/net/dns-resolver"
+      body: '{"name": "explicit-resolver","forwardZones": [
+      { "name": ".", "nameservers": [ { "name": "20.20.20.2:53"}]}]}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"

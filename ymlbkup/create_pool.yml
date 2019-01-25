@@ -1,0 +1,18 @@
+---
+
+- name: Create a VIP, pool, pool members and nodes
+  hosts: 10.0.0.160
+  connection: local
+
+  tasks:
+   - name: Create a pool
+     bigip_pool:
+         lb_method: "ratio_member"
+         name: "web"
+         password: "admin"
+         server: "10.0.0.160"
+         slow_ramp_time: "120"
+         user: "admin"
+         validate_certs: "no"
+     delegate_to: localhost
+

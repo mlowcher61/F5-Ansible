@@ -1,0 +1,37 @@
+---
+      
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      short_description: This playbook will add allowed urls
+#      to an ASM policy. 
+#      The api call cannot use the actual name of the policy.
+#      Do the following curl command piped to jq from the CLI of the F5.
+#      curl -sku admin:admin https://<ip address of F5 management>/mgmt/tm/asm/policies | jq .items 
+#      Match your desired policy name with the long string needed for the api call
+#      See the UOBxa66WFloQwonbHg3Rlw example below.
+
+- name: F5 Setup
+  hosts: 10.0.0.175
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    
+  tasks:
+  - name: Get facts from CSV file
+    csv_to_facts:
+      src: ./files/asm_add_urls.csv
+
+  - name: Adding urls to an ASM policy 
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/asm/policies/Kj4IDGAhx7A45myee3brnw/urls"
+      body: '{"protocol":"http","name":"{{item.allowed_url}}"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes"

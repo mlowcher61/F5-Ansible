@@ -1,0 +1,6 @@
+---
+  - hosts: serv-center
+    tasks:
+      - name: Enable Application Connector Service Center
+        raw: touch /var/config/rest/iapps/enable
+

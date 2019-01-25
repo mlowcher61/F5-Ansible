@@ -1,0 +1,30 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will turn on an advisory banner.
+#      This is useful to alert f5 loadbalancer operators of system
+#      maintenance.
+
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.181"
+
+  tasks:
+  - name: Turning off advisory banner
+    icontrol_install_config:
+      method: PATCH
+      uri: "/mgmt/tm/sys/db/ui.advisory.enabled"
+      body: '{"value":"false"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"

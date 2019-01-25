@@ -1,0 +1,27 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a child HTTP monitor 
+#      The "state" attribute should be set to "present" to create the
+#      monitor and to "absent" to delete the monitor.
+
+- name: Create HTTP Monitor
+  hosts: 10.0.0.174
+  connection: local
+
+  tasks: 
+   - name: Creating the HTTP monitor
+     bigip_monitor_http:
+         state: "absent"
+         server: "10.0.0.174"
+         user: "admin"
+         password: "admin"
+         name: "ansible_http_monitor2"
+         send: "http string to send"
+         receive: "http string to receive"
+         validate_certs: "no"
+     delegate_to: localhost

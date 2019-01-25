@@ -1,0 +1,40 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will update the geolocation database. 
+#      The geoip files must be downloaded from https://downloads.f5.com and 
+#      placed in the appropriate directories within the Ansible system.
+#      Make sure to edit the src= path below accordingly.
+#      This file calls the hosts "loadbalancer" Make sure that you have defined 
+#      this in your /etc/ansible/hosts file. You can update as many devices at
+#      once as you wish.
+#      Example [loadbalancer]
+#               10.0.0.100
+#               10.0.0.101
+#
+
+
+   - hosts: loadbalancer
+
+     tasks:
+       - name: push geo_db_ISP
+         copy: src=/home/lowcher/ansible/geo_db/geoip-data-v2-ISP-2.0.0-20161103.234.0.i686.rpm dest=/shared/tmp mode=0755 
+
+       - name: push geo_db_Org
+         copy: src=/home/lowcher/ansible/geo_db/geoip-data-v2-Org-2.0.0-20161103.234.0.i686.rpm dest=/shared/tmp mode=0755
+
+       - name: push geo_db_Region
+         copy: src=/home/lowcher/ansible/geo_db/geoip-data-v2-Region2-2.0.0-20161103.234.0.i686.rpm dest=/shared/tmp mode=0755
+
+       - name: update geo_db_ISP 
+         raw: geoip_update_data -f /shared/tmp/geoip-data-v2-ISP-2.0.0-20161103.234.0.i686.rpm 
+
+       - name: update geo_db_Org_
+         raw: geoip_update_data -f /shared/tmp/geoip-data-v2-Org-2.0.0-20161103.234.0.i686.rpm  
+
+       - name: update geo_db_Region
+         raw: geoip_update_data -f /shared/tmp/geoip-data-v2-Region2-2.0.0-20161103.234.0.i686.rpm  

@@ -1,0 +1,32 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will run an arbitrary
+#      tmsh command from bash. In this example it will 
+#      run "tmsh show sys version" and "tmsh list ltm virtual
+#      Notice you don't need the "tmsh" as part of the
+#      command in this playbook.
+#
+#      ~~~~~~~~~~~~~~~NOTICE~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#      This playbook will not work until Ansible 2.4
+#      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- name: run show version on remote devices
+  hosts: 10.0.0.160
+  connection: local
+
+  tasks:
+   - name: Show software version
+     bigip_command:
+         commands: 
+           - show sys version
+           - list ltm virtual
+         server: "10.0.0.160"
+         password: "admin"
+         user: "admin"
+         validate_certs: "no"
+     delegate_to: localhost

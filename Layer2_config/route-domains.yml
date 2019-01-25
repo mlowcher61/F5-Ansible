@@ -1,0 +1,46 @@
+---
+
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      short_description: Playbook for creating route domains,
+#      vlans and selfips.
+
+- name: Starting the Layer 2 Network Config
+  hosts: localhost
+  gather_facts: false
+  vars:
+   username: "admin"
+   password: "admin"
+   
+
+  tasks:
+
+  - name: Get facts from CSV file
+    csv_to_facts:
+      src: ~/app_svc_L4-7/ansible/playbooks/Layer2_config/route-domains.csv
+
+  - name: Creating the route domains on Device .15
+    bigip_routedomain:
+     id: "{{item.id}}"
+     user: "{{username}}"
+     password: "{{password}}"
+     validate_certs: False
+     server: "{{item.appliance}}"
+     state: "present"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "yes" 
+    delegate_to: localhost
+ 
+  - name: Creating the route domains on Device .16
+    bigip_routedomain:
+     id: "{{item.id}}"
+     user: "{{username}}"
+     password: "{{password}}"
+     validate_certs: False
+     server: "{{item.appliance}}"
+     state: "present"
+    with_items: "{{spreadsheet}}"
+    when: item.primary == "no"
+    delegate_to: localhost

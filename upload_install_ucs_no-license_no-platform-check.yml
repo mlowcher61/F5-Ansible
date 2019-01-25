@@ -1,0 +1,30 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will upload and install a .ucs  
+#      backup. You can disable the "no_license" and "no_platform_check
+#      if desired.
+#      Edit ip addresses, set the ucs source path and edit the
+#      username and password accordingly.
+#      bigip_software module requires Ansible v2.4 or greater.
+
+- name: Upload UCS
+  hosts: 10.0.0.174
+  connection: local
+
+  tasks: 
+   - name: Install (upload, install) UCS except the license and bypassing the platform check
+     bigip_software:
+         server: "10.0.0.174"
+         user: "admin"
+         password: "admin"
+         ucs: "/root/bigip.localhost.ucs"
+         state: "installed"
+         no_license: "yes"
+         no_platform_check: "yes"
+         validate_certs: "no"
+     delegate_to: localhost

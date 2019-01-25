@@ -1,0 +1,12 @@
+  - name: Disabling GUI setup on both devices
+    bigip_command:
+      server: "{{ item.server }}"
+      user: "{{setup_user}}"
+      password: "{{setup_pass}}"
+      commands:
+      - modify sys global-settings gui-setup disabled
+    delegate_to: localhost
+    with_items:
+         - server: "{{ bigip1 }}"
+         - server: "{{ bigip2 }}"
+

@@ -1,0 +1,43 @@
+#!/usr/bin/ansible-playbook
+---
+      
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      short_description: This playbook will add allowed urls
+#      to an ASM policy. 
+#      The api call cannot use the actual name of the policy.
+#      Do the following curl command piped to jq from the CLI of the F5.
+#      curl -sku admin:admin https://<ip address of F5 management>/mgmt/tm/asm/policies | jq .items 
+#      Match your desired policy name with the long string needed for the api call
+#      See the UOBxa66WFloQwonbHg3Rlw example below.
+
+- name: F5 Setup
+  hosts: 10.0.0.175
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    bigip: "10.0.0.175"
+    
+  tasks:
+
+  - name: Pushing a waf policy to f5 
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/asm/file-transfer/uploads/linux-test.xml"
+      host: "{{bigip}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+
+#  - name: Importing the waf policy 
+#    icontrol_install_config:
+#      method: "_post_"
+#      uri: "/mgmt/tm/asm/policies/tasks/import-policy"
+#      body: '{"filename":"linux-test.xml","name":"dummy"}'
+#      host: "{{bigip}}"
+#      username: "{{setup_user}}"
+#      password: "{{setup_pass}}"
+

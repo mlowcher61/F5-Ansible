@@ -1,0 +1,151 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2017 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will perform the 
+#      following onboarding operations for an active/standby pair.
+#      - License the bigip
+#      - Disable the setup GUI
+#      - Provision desired modules
+#      - Rename the F5 host
+#      - Setup DNS and NTP
+#      - Create vlans
+#      - Create self ips
+#      Edit the DNS and NTP variables down in the play itself
+
+- name: Connecting...	
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+   server1: 10.0.0.157
+   server2: 10.0.0.158
+   regkey1: WHDQH-HZNMC-BQCBP-HPBIS-ZWOXMGA
+   regkey2: BQDQH-HFMLC-ANCBP-CVCIS-OXMGBLU
+   setup_user: admin
+   setup_pass: admin
+   hostname1: f5-bigip1.xyz.com
+   hostname2: f5-bigip2.xyz.com
+
+  tasks:
+  - name: Licensing the BIG-IP
+    bigip_command:
+     server: "{{ item.server }}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     commands:
+     - /usr/local/bin/SOAPLicenseClient --interactive  --basekey "{{item.regkey}}"
+     validate_certs: False
+    delegate_to: localhost
+    with_items:
+     - server: "{{server1}}"
+     - regkey: "{{regkey1}}"
+     - server: "{{server2}}"
+     - regkey: "{{regkey2}}"
+
+  - name: Disabling the setup GUI
+    bigip_command:
+     server: "{{ item.server }}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     commands:
+     - show sys version
+     - modify sys global-settings gui-setup disabled
+     validate_certs: False
+    delegate_to: localhost
+    with_items:
+     - server: "{{server1}}"
+     - server: "{{server2}}"
+
+  - name: Renaming F5 instances
+    bigip_command:
+     server: "{{ item.server }}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     commands:
+     - modify cm device bigip1 hostname "{{item.hostname}}"
+     - mv cm device bigip1 "{{item.hostname}}"
+     validate_certs: False
+    delegate_to: localhost
+    with_items:
+     - server: "{{server1}}"
+     - hostname: "{{hostname1}}"
+     - server: "{{server2}}"
+     - hostname: "{{hostname2}}"
+
+  - name: Configuring DNS
+    bigip_device_dns:
+     name_servers:
+         - 208.67.222.222
+         - 208.67.220.220
+     search:
+         - localdomain
+         - lab.local
+     server: "{{item.server}}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     validate_certs: "no"
+    delegate_to: localhost
+    with_items:
+     - server: "{{server1}}"
+     - server: "{{server2}}"
+
+  - name: Configuring NTP
+    bigip_device_ntp:
+     ntp_servers:
+         - 208.67.222.222
+         - 208.67.220.220
+     server: "{{item.server}}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     validate_certs: "no"
+    delegate_to: localhost
+    with_items:
+     - server: "{{server1}}"
+     - server: "{{server2}}"
+
+  - name: Configuring vlans
+    bigip_vlan:
+     name: "{{item.name}}"
+     server: "{{item.server}}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     validate_certs: "no"
+    delegate_to: localhost
+    with_items:
+      - server: "{{server1}}"
+      - name: external
+      - name: internal
+      - name: HA_sync
+      - server: "{{server2}}"
+      - name: external
+      - name: internal
+      - name: HA_sync
+
+  - name: Configuring self-ips
+    bigip_selfip:
+     address: "{{item.address}}"
+     netmask: "{{item.netmask}}"
+     name: "{{item.name}}"
+     server: "{{item.server}}"
+     user: "{{setup_user}}"
+     password: "{{setup_pass}}"
+     validate_certs: "no"
+    delegate_to: localhost
+    with_items:
+      - server: "{{server1}}"
+      - name: external
+      - address: "{{external_self1}}"
+      - netmask: "{{external_netmask}}"
+      - server: "{{server2}}"
+      - name: external
+      - address: "{{external_self2}}"
+      - netmask: "{{external_netmask}}"
+
+
+      - name: external_self
+      - name: internal_self
+

@@ -1,0 +1,4 @@
+POST to /mgmt/tm/util/bash
+JSON: {	"command":"run”,"utilCmdArgs":"-c ’mkdir -r /var/config/rest/downloads/mydir’”}
+
+

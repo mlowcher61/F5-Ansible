@@ -1,0 +1,32 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will set the ntp servers
+#      and the timezone. 
+
+- name: Connecting...
+  hosts: "10.0.0.157"
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    bigip: "10.0.0.157"
+
+  tasks:
+    - name: Set NTP servers and timezone
+      bigip_device_ntp:
+          ntp_servers:
+              - "192.0.2.23"
+              - "192.0.2.24"
+          timezone: "America/Chicago"
+          user: "{{setup_user}}"
+          password: "{{setup_pass}}"
+          server: "{{bigip}}"
+          state: "present"
+          validate_certs: "no"
+      delegate_to: localhost

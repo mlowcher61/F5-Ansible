@@ -1,0 +1,33 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will push an irule
+
+- name: Provision modules
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+   server: 10.0.0.175
+   setup_user: admin
+   setup_pass: admin
+   name: irule3
+
+   
+
+  tasks: 
+   - name: Staging irule
+     bigip_irule:
+         name: "{{ name }}"
+         content: "{{ lookup('template', './irules/irule1.tcl') }}"
+         server: "{{ server }}"
+         user: "{{setup_user}}"
+         password: "{{setup_pass}}"
+         state: "present"
+         module: "ltm"
+         validate_certs: "no"
+     delegate_to: localhost

@@ -1,0 +1,2 @@
+appliance,primary,udp_name,tcp_name,listener_address,datacenter1,datacenter2,server_object1,server_object2,server_object1_self,server_object2_self,vip1_name,vip2_name,vip1_ipport,vip2_ipport,deviceName1,deviceName2,app1_pool,app2_pool,wideip
+10.0.0.160,yes,green_udp_listener,green_tcp_listener,20.20.20.200,Dallas,Secaucas,gtm-ltm-dallas,gtm-ltm-secaucus,20.20.20.5,30.30.30.5,app1,app2,20.20.20.200:80,30.30.30.200:80,/Common/gtm-ltm-dallas,/Common/gtm-ltm-secaucas,firstapp_pool,secondapp_pool,www.app1.com

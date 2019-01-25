@@ -1,0 +1,14 @@
+---
+  - hosts: 10.0.0.175 
+    tasks:
+      - name: Disable management dhcp
+        raw: tmsh modify sys global-settings mgmt-dhcp disabled
+
+      - name: Create static management ip address
+        raw: tmsh create sys management-ip 10.0.0.170/24
+
+#      - name: Delete existing management route
+#       raw: tmsh delete sys management-route 10.0.0.1
+
+#      - name: Create new management route
+#       raw: tmsh create sys management-route 10.0.0.1 

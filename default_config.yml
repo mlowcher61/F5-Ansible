@@ -1,0 +1,13 @@
+---
+  - hosts: bigip
+    connection: local
+    tasks:
+      - name: Reset the BIG-IP configuration, for example, to RMA the device
+        bigip_config:
+          reset: yes
+          save: yes
+          server: "{{ inventory_hostname }}"
+          password: admin
+          user: admin
+          validate_certs: no
+        delegate_to: localhost

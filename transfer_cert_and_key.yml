@@ -1,0 +1,42 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will read create a clientssl profile. 
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    
+  tasks:
+  - name: Copy variables from spreadsheet
+    csv_to_facts:
+      src: ./files/transfer.csv
+
+  - name: Move cert to F5 device
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/sys/crypto/cert"
+      body: '{"command":"install","name":"{{item.cert_name}}","from-local-file":"/var/tmp/kenkar2.crt"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Move key to F5 device
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/sys/crypto/key"
+      body: '{"command":"install","name":"{{item.key_name}}","from-local-file":"/var/tmp/kenkar2.key"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"

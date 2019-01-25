@@ -1,0 +1,5 @@
+appliance,primary,allowed_url
+10.0.0.175,yes,index.html
+10.0.0.175,yes,shopping_cart.html
+10.0.0.175,yes,my_url.html
+10.0.0.175,yes,another.html

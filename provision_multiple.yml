@@ -1,0 +1,28 @@
+---
+- name: Provisioning ASM
+  hosts: localhost
+  gather_facts: false
+  vars:
+   username: admin
+   password: admin
+   server: 10.0.0.167 
+   module: asm
+   level: nominal
+
+
+  tasks:
+
+  - name: Provision BIG-IP with appropriate modules
+    bigip_provision:
+      server: "{{server }}"
+      user: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+      module: "{{item}}"
+      level: "{{level}}"
+    tags: provision
+    with_items:
+      - asm
+      - afm
+      - apm
+    delegate_to: localhost

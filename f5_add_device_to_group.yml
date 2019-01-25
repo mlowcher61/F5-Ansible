@@ -1,0 +1,95 @@
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create an HA configuration
+#      on two newly licensed devices.
+#
+
+- name: Set up a BIG-IP HA pair
+  hosts: bigip
+  gather_facts: false
+
+  vars:
+   bigip1: 10.0.0.167
+   bigip2: 10.0.0.168
+   hostname1: bigf5-1.home.com
+   hostname2: bigf5-2.home.com 
+   external_vlan: external_vlan
+   internal_vlan: internal_vlan
+   ha_vlan: ha_vlan
+   external_self_name: external_self
+   internal_self_name: internal_self
+   external_self_float_name: external_self_float
+   internal_self_float_name: internal_self_float
+   ha_self_name: ha_self
+   external_self_1: 20.20.20.20
+   external_self_2: 20.20.20.21
+   external_self_float: 20.20.20.22
+   external_tag: 20
+   internal_self_1: 10.10.10.10
+   internal_self_2: 10.10.10.11
+   internal_self_float: 10.10.10.12
+   internal_tag: 10 
+   ext_netmask: 255.255.255.0
+   int_netmask: 255.255.255.0
+   ha_netmask: 255.255.255.252
+   ha_self_1: 1.1.1.1
+   ha_self_2: 1.1.1.2
+   name_server_1: 64.65.64.65
+   name_server_2: 8.8.8.8
+   setup_user: admin
+   setup_pass: admin
+   state: present
+# Change the state above to "absent" to remove object(s)
+
+  tasks:
+
+  - name: Add trust for second device to Active device
+    bigip_device_trust:
+      server: "{{ bigip1 }}"
+      user: "{{ setup_user }}"
+      password: "{{ setup_pass }}"
+      peer_server: "{{ bigip2 }}"
+      peer_hostname: "{{ hostname2 }}"
+      peer_user: "{{ setup_user }}"
+      peer_password: "{{ setup_pass }}"
+      validate_certs: "no"
+    delegate_to: localhost
+  
+  - name: Add the current device to the "sync-failover" device group
+    bigip_device_group_member:
+     name: "{{ item.server }}"
+     device_group: sync-failover
+     password: "{{ setup_pass }}"
+     server: "{{ inventory_hostname }}"
+     state: present
+     user: "{{ setup_user }}"
+     validate_certs: "no"
+    delegate_to: localhost
+    with_items:
+           - server: "{{ hostname1 }}"
+           - server: "{{ hostname2 }}"
+
+  - name: Perform an initial sync of a device to the sync-failover group
+    bigip_configsync_action:
+     device_group: sync-failover
+     sync_device_to_group: yes
+     server: "{{ bigip1 }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     validate_certs: "no"
+    delegate_to: localhost
+
+  #- name: Confirm HA pair is formed
+  #  bigip_command:
+  #   server: "{{ bigip1 }}"
+  #   user: "{{ setup_user }}"
+  #   password: "{{ setup_pass }}"
+  #   commands:
+  #    - show cm sync-status
+  #   wait_for:
+  #    - result[0] contains "high-availability"
+  #  delegate_to: localhost

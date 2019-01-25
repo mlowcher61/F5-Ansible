@@ -1,0 +1,26 @@
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will license two f5 devices. Be sure to change the --basekey to your basekeys!!
+#      Also make sure your bigips are in /etc/ansible/hosts.
+#      Example: 
+#      [bigip]
+#      10.0.0.100
+#      10.0.0.101
+#
+
+  - hosts: bigip[0]
+    tasks:
+      - name: License Big-IP
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey BJXUC-LNCNY-YLPMA-HKJQD-RVVSUOM
+
+  - hosts: bigip[1]
+    tasks:
+      - name: License Big-IP
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey RAAWG-BITHU-GIYDE-EWSLR-QMPTTAT
+
+
+# Back up licenses

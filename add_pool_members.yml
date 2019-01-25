@@ -1,0 +1,52 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will add pool members to
+#      a pool
+
+- name: Add pool members and nodes
+  hosts: 10.0.0.160
+  connection: local
+
+  tasks:
+      - name: Create node1
+        bigip_node:
+            host: "10.10.10.10"
+            name: "node-1"
+            password: "admin"
+            server: "10.0.0.160"
+            user: "admin"
+            validate_certs: "no"
+        delegate_to: localhost
+
+      - name: Create node2
+        bigip_node:
+            host: "10.10.10.20"
+            name: "node-2"
+            password: "admin"
+            server: "10.0.0.160"
+            user: "admin"
+            validate_certs: "no"
+        delegate_to: localhost
+
+      - name: Add nodes to pool
+        bigip_pool_member:
+            description: "webserver-1"
+            host: "{{ item.host }}"
+            name: "{{ item.name }}"
+            password: "admin"
+            pool: "web_pool"
+            port: "80"
+            server: "10.0.0.160"
+            user: "admin"
+            validate_certs: "no"
+        delegate_to: localhost
+        with_items:
+            - host: "10.10.10.10"
+              name: "node-1"
+            - host: "10.10.10.20"
+              name: "node-2"

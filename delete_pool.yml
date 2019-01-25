@@ -1,0 +1,34 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will delete a pool 
+#      Requires Ansible 2.3 or higher
+
+- name: Delete a pool
+  hosts: 10.0.0.160
+  connection: local
+  gather_facts: no
+  vars:
+    appliance: "10.0.0.160"
+    setup_user: "admin"
+    setup_pass: "admin"
+    poolname: "web_pool"
+
+
+
+  tasks:
+
+  - name: Delete pool "{{poolname}}"
+    bigip_pool:
+        name: "{{poolname}}"
+        password: "{{setup_pass}}"
+        server: "{{appliance}}"
+        user: "{{setup_user}}"
+        state: "absent"
+        validate_certs: "no"
+    delegate_to: localhost
+

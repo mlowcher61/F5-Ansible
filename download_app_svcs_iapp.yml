@@ -1,0 +1,29 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will deploy an iApp with L7 services
+#      To change this play to update to .005 rather than .004. Update
+#      the vars with the following command.
+#      :%s/.004/.005/g
+#
+
+- hosts: 10.0.0.175
+  gather_facts: false
+
+  vars:
+   server: 10.0.0.175
+   iapp: appsvcs_integration_v2.0.004
+   version: v2.0.004
+
+  tasks:
+
+  #This task will get the iApp template from github(or any other link) and store it in local path specified
+  - name: Get iApp from Github
+    get_url:
+     url: https://github.com/F5Networks/f5-application-services-integration-iApp/releases/download/"{{version}}"/"{{iapp}}"
+     dest: /var/tmp
+     validate_certs: False

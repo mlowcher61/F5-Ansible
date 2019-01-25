@@ -1,0 +1,30 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will provision the selected module.
+
+- name: Provision module
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+   server: loadbalancer
+   setup_user: admin
+   setup_pass: admin
+
+   
+
+  tasks: 
+   - name: Provisioning module
+     bigip_provision:
+      module: "apm"
+      level: "nominal"
+      server: "{{ server }}"
+      user: "{{setup_user}}"
+      password: "{{setup_pass}}"
+      validate_certs: "no"
+     delegate_to: localhost

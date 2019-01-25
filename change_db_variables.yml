@@ -1,0 +1,33 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will make changes to
+#      db variables on the F5. Set the "key" and "value"
+#      for the db variable you wish to change.
+#      From the bash CLI of the F5 run the "tmsh list sys db"
+#      command to see all db variables. 
+
+- name: Connecting...
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+   bigip: 10.0.0.180
+   setup_user: admin
+   setup_pass: admin
+
+   
+
+  tasks: 
+   - name: Set the boot.quiet DB variable on the BIG-IP
+     bigip_sys_db:
+      user: "{{ setup_user }}"
+      password: "{{ setup_pass }}"
+      server: "{{ bigip }}"
+      key: "boot.quiet"
+      value: "disable"
+     delegate_to: localhost

@@ -1,0 +1,39 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a tcp monitor on the target system 
+#      and config-sync to it's peer using the "SyncFail" device group . 
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.181"
+    
+  tasks:
+
+  - name: Creating a tcp monitor
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/ltm/monitor/tcp"
+      body: '{"name":"my_tcp_monitor"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    
+  - name: Config Sync
+    icontrol_install_config:
+      uri: "mgmt/tm/cm/"
+      body: '{"command":"run","utilCmdArgs":"config-sync to-group SyncFail"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    

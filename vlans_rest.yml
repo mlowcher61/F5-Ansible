@@ -1,0 +1,42 @@
+---
+#
+#      Copyright (c) 2016 World Wide Technology, Inc. 
+#      All rights reserved. 
+#
+#      author: Mark Wall  World Wide Technology
+#      short_description: Automation of F5 Initial Setup 
+#      description: Importing configuration via CSV files to automate initial configuration of F5.
+#                   This playbook will read a CSV file and perform initial F5 setup steps leaving a 
+#                   running active/standby pair.
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    
+  tasks:
+  - name: Get facts from CSV file
+    csv_to_facts:
+      src: ./vlans_rest.csv
+
+  - name: Create VLAN Internal
+    icontrol_install_config: 
+      uri: "/mgmt/tm/net/vlan"
+      body: '{"name":"{{item.vlan}}","tag":"{{item.tag}}"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+
+  - name: Assign VLAN to Interface
+    icontrol_install_config:
+      uri: "/mgmt/tm/net/vlan/~Common~{{item.vlan}}/interfaces"
+      body: '{"name":"{{item.interface}}","tagged":true}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"

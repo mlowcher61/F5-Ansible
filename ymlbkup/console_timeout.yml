@@ -1,0 +1,31 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will set the ssh console timeout. 
+#      The playbook completes successfully but doesn't seem to 
+#      actually make the change.  
+
+- name: Connecting...
+  hosts: "10.0.0.160"
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.160"
+
+  tasks: 
+
+   - name: Setting console timeout
+     bigip_sys_global:
+         console_timeout: "150"
+         server: "{{appliance}}"
+         user: "{{setup_user}}"
+         password: "{{setup_pass}}"
+         state: "present"
+         validate_certs: "no"
+     delegate_to: localhost

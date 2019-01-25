@@ -1,0 +1,30 @@
+#!/usr/bin/ansible-playbook 
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will spin up a compute 
+#      instance in Azure.
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+ 
+  tasks:
+   - name: Create a virtual machine in Azure
+     azure:
+       name: my-virtual-machine	
+       role_size: Small 
+       image: b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu_DAILY_BUILD-precise-12_04_3-LTS-amd64-server-20131205-en-us-30GB
+       location: East US
+       ssh_cert_path: /etc/ansible/marks_azure.pem
+       management_cert_path: ~/ansible/Free Trial-7-19-2017-credentials.publishsettings
+       user: ubuntu
+       storage_account: marksresourcegroup332
+       subscription_id: c7fcfde2-b020-439f-98e7-05818f6e2c2e
+       wait: True
+       state: present
+     delegate_to: localhost 

@@ -1,0 +1,10 @@
+---
+   - hosts: bigip
+
+     tasks:
+       - name: push cert
+         copy: src=/var/tmp/kenkar2.crt dest=/config/ssl/ssl.crt/    
+
+       - name: push key
+         copy: src=/var/tmp/kenkar2.key dest=/config/ssl/ssl.key/
+   

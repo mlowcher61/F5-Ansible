@@ -1,0 +1,8 @@
+Steps to configure a Layer 2 configuration on redundant F5s.
+	1. License the devices using the license_F5_pair.yml playbook
+	2. Run the f5_HA_trunks playbook to setup an HA configuration
+	3. Run the create_trunks playbook to setup the Egress and Ingress trunks on both devices.
+	4. Run the network_config playbook to configure the route domains, vlans and self IPs.
+	5. Run the create_pools playbook to configure all the pools
+	6. Run the create_virtual_servers playbook to... you got it!
+	7. Run the modify_virtuals playbook to set the listen to vlans and turn off address and port translation.

@@ -1,0 +1,37 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will perform the first part of setting up the
+#      application connector service center. 
+#      The steps are as follows:
+#      - Verify that the target F5 device is running v13 or greater
+#      - Verify that the F5 device is licensed for App Connector.
+#      - Provision all desired modules including iRulesLX. This playbook will
+#        provision iRulesLX if you are running Ansible 2.4 and you uncomment 
+#        the provisioning module below.
+#      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#      You must provision iRulesLX before running this playbook. The module
+#      that performs this function will not work until Ansible 2.4 is released
+#      I've left the code in and commented it out for later.
+#      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+#      - This playbook will enable App Connector.
+#      - This playbook will copy the necessary files to the F5
+#        NOTICE: Be sure you have staged the files in the ~/ansible/playbooks
+#        directory as described in the "Ansible Orchestration for Application
+#        Connector deployment guide located at https://github.com/mlowcher61
+#      - After running this playbook perform the manual steps described in the 
+#        deployment guide prior to running the app_connector_part2 playbook. 
+
+   - hosts: 10.0.0.185
+
+     tasks: 
+       - name: Enabling App Connector
+         raw: touch /var/config/rest/iapps/enable
+
+       - name: Importing app-connector RPM
+         copy: src=/home/lowcher/ansible/playbooks/f5-acproxy-1.0.0-build.44.tgz dest=/var/config/rest/downloads/
+         copy: src=/home/lowcher/ansible/playbooks/f5-acproxy-1.0.0-build.44.tgz dest=/opt/.sdm/var/config/rest/downloads/ 

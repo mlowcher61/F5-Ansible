@@ -1,0 +1,28 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will change the preferences on the F5 loadbalancer.
+
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.160"
+
+  tasks:
+  - name: Change preference from basic to advanced
+    icontrol_install_config:
+      method: PATCH
+      uri: "/mgmt/tm/sys/globalSettings"
+      body: '{"gui-security-banner":"enabled","gui-security-banner-text":"I hope this works and stay out of my yard"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"

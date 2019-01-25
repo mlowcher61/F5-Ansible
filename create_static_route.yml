@@ -1,0 +1,27 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a static route. 
+#      The "state" attribute should be set to "present" to create the
+#      route and to "absent" to delete the route.
+#      Edit ip addresses, username and password accordingly.
+
+- name: Create a static route
+  hosts: localhost
+  connection: local
+
+  tasks: 
+  - name: Creating static route with gateway address
+      bigip_static_route:
+          server: "10.0.0.40"
+          destination: "3.3.3.3"
+          gateway_address: "10.168.68.1%1"
+          user: "admin"
+          password: "admin"
+          name: "ansible_static_route"
+          validate_certs: "no"
+      delegate_to: localhost

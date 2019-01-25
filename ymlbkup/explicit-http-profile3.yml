@@ -1,0 +1,30 @@
+#!/usr/bin/ansible-playbook gtmpool.yml
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create the http profile required for setting up an explicit forward proxy.
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.164"
+    
+  tasks:
+
+  - name: Create explicit http profile
+    icontrol_install_config:
+      method: "_post_"
+      uri: "/mgmt/tm/ltm/profile/http"
+      body: '{"name": "explicit-http","acceptXff": "disabled","defaultsFrom": "/Common/http-explicit"},
+    "explicitProxy": { ["defaultConnectHandling": "deny","dnsResolver": "/Common/explicit-resolver","tunnel-name": "http-tunnel", "insertXforwardedFor": "disabled", "oneconnectTransformations": "disabled","proxyType": "explicit"]}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"

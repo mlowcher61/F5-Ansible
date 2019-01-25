@@ -1,0 +1,59 @@
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will delete a pool and vip
+#     opyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will delete a pool and vip
+#      Requires Ansible 2.3 or higher
+
+
+- name: Delete a VIP, pool and members 
+  hosts: 10.0.0.160
+  connection: local
+  gather_facts: no
+  vars:
+    appliance: "10.0.0.160"
+    setup_user: "admin"
+    setup_pass: "admin"
+    poolname: "web_pool"
+    vipname: "my_vip"
+    http_redirect: "my_redirect"
+    
+
+  tasks:
+
+  - name: Delete vip "{{vipname}}"
+    bigip_virtual_server:
+        password: "{{setup_pass}}"
+        name: "{{vipname}}"
+        server: "{{appliance}}"
+        user: "{{setup_user}}"
+        state: "absent"
+        validate_certs: "no"
+    delegate_to: localhost
+
+  - name: Delete the redirect virtual server
+    bigip_virtual_server:
+        server: "{{appliance}}"
+        user: "{{setup_user}}"
+        password: "{{setup_pass}}"
+        name: "{{http_redirect}}"
+        state: "absent"
+        validate_certs: "no"
+    delegate_to: localhost
+
+  - name: Delete pool "{{poolname}}"
+    bigip_pool:
+        name: "{{poolname}}"
+        password: "{{setup_pass}}"
+        server: "{{appliance}}"
+        user: "{{setup_user}}"
+        state: "absent"
+        validate_certs: "no"
+    delegate_to: localhost

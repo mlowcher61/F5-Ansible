@@ -1,0 +1,30 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create a child tcp monitor based on the
+#      the parent monitor stated in the "type" attribute. The "state" attribute 
+#      should be set to "present" to create the monitor and to "absent" to delet
+#      the monitor. The "send" and "receive" attributes have been commented out
+#      but are there to show how to add them if desired.
+
+- name: Create TCP Monitor
+  hosts: "10.0.0.185"
+  connection: local
+
+  tasks: 
+   - name: Creating the TCP monitor
+     bigip_monitor_tcp:
+         state: "present"
+         server: "10.0.0.185"
+         user: "admin"
+         password: "admin"
+         name: "ansible_tcp_monitor"
+         type: "tcp"
+         # send: "tcp string to send"
+         #receive: "tcp string to receive"
+         validate_certs: "no"
+     delegate_to: localhost

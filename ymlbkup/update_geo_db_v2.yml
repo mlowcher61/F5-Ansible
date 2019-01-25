@@ -1,0 +1,38 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will transfer the geoip location database files to the specified hosts and install each RPM
+#      Please edit the src location appropriately and edit the vars to represent the correct geoip RPMs and path to the files 
+#
+
+
+   - hosts: loadbalancer
+     gather_facts: no
+     vars:
+       geo_ISP: "geoip-data-v2-ISP-2.0.0-20161103.234.0.i686.rpm"
+       geo_Org: "geoip-data-v2-Org-2.0.0-20161103.234.0.i686.rpm"
+       geo_Region: "geoip-data-v2-Region2-2.0.0-20161103.234.0.i686.rpm"
+       path: "/home/lowcher/ansible/geo_db"
+
+     tasks:
+       - name: push geo_db_ISP
+         copy: src="{{path}}"/"{{geo_ISP}}" dest=/shared/tmp mode=0755 
+
+       - name: push geo_db_Org
+         copy: src="{{path}}"/"{{geo_Org}}" dest=/shared/tmp mode=0755
+
+       - name: push geo_db_Region
+         copy: src="{{path}}"/"{{geo_Region}}" dest=/shared/tmp mode=0755
+
+       - name: update geo_db_ISP 
+         raw: geoip_update_data -f /shared/tmp/"{{geo_ISP}}" 
+
+       - name: update geo_db_Org_
+         raw: geoip_update_data -f /shared/tmp/"{{geo_Org}}"  
+
+       - name: update geo_db_Region
+         raw: geoip_update_data -f /shared/tmp/"{{geo_Region}}"  

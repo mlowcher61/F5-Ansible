@@ -1,0 +1,30 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will download a .ucs archive.
+#      If it does not already exist on the bigip, it will create it. 
+
+- name: Connecting...
+  hosts: "10.0.0.157"
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    bigip: "10.0.0.157"
+    ucs_file: "cs_backup.ucs"
+
+  tasks:
+    - name: Download a new UCS
+      bigip_ucs_fetch:
+          server: "{{bigip}}"
+          user: "{{setup_user}}"
+          password: "{{setup_pass}}"
+          src: "{{ucs_file}}"
+          dest: "/tmp/cs_backup.ucs"
+          validate_certs: "no"
+      delegate_to: localhost

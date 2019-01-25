@@ -1,0 +1,98 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will configure an external
+#      and internal vlans and their respective self ips.
+#      You need to run the licensing and setup playbooks
+#      prior to running this one.
+#      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#        This playbook requires Ansible 2.2 or higher 
+#      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+- name: Installing base config for standalone F5
+  hosts: 10.0.0.185
+  connection: local
+  gather_facts: no
+  vars:
+    appliance: "10.0.0.185"
+    setup_user: "admin"
+    setup_pass: "admin"
+    timezone: "American/Chicago"
+    state: "present"
+
+  tasks:
+
+   - name: Create external vlan
+     bigip_vlan:
+         name: "external"
+         password: "{{setup_pass}}"
+         server: "{{appliance}}"
+         user: "{{setup_user}}"
+         state: "{{state}}"
+         validate_certs: "no"
+     delegate_to: localhost
+
+   - name: Create internal vlan
+     bigip_vlan:
+         name: "internal"
+         password: "{{setup_pass}}"
+         server: "{{appliance}}"
+         state: "{{state}}"
+         user: "{{setup_user}}"
+         validate_certs: "no"
+     delegate_to: localhost
+
+   - name: Add external vlan as untagged to interface 1.1
+     bigip_vlan:
+         untagged_interface: 1.1
+         name: "external"
+         password: "{{setup_pass}}"
+         server: "{{appliance}}"
+         state: "{{state}}"
+         user: "{{setup_user}}"
+         validate_certs: "no"
+     delegate_to: localhost
+
+   - name: Add internal vlan as untagged to interface 1.2
+     bigip_vlan:
+         untagged_interface: 1.2
+         name: "internal"
+         password: "{{setup_pass}}"
+         server: "{{appliance}}"
+         state: "{{state}}"
+         user: "{{setup_user}}"
+         validate_certs: "no"
+     delegate_to: localhost
+
+   - name: Create external self IP
+     bigip_selfip:
+         address: "20.20.20.20"
+         name: "external_self"
+         netmask: "255.255.255.0"
+         password: "{{setup_pass}}"
+         server: "{{appliance}}"
+         state: "{{state}}"
+         user: "{{setup_user}}"
+         validate_certs: "no"
+         vlan: "external"
+     delegate_to: localhost
+
+   - name: Create internal self IP
+     bigip_selfip:
+         address: "10.10.10.10"
+         name: "internal_self"
+         netmask: "255.255.255.0"
+         password: "{{setup_pass}}"
+         server: "{{appliance}}"
+         state: "{{state}}"
+         user: "{{setup_user}}"
+         validate_certs: "no"
+         vlan: "internal"
+         allow_service:
+             - default 
+     delegate_to: localhost

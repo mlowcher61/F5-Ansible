@@ -1,0 +1,5 @@
+---
+  - hosts: all
+    tasks:
+      - name: Provision ASM on both units 	
+        raw: "tmsh modify sys provision asm level nominal" 

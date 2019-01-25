@@ -1,0 +1,5 @@
+appliance,primary,name,placeAfter,action,dest_ip,protocol,ports
+10.0.0.157,yes,Allow-port-9000,,accept,10.2.3.5,tcp,9000
+10.0.0.157,yes,Allow-port-9001,last,accept,10.2.3.10,tcp,9001
+10.0.0.157,yes,Allow-port-9002,last,accept,10.2.3.20,tcp,9002
+10.0.0.157,yes,Allow-port-9003,last,accept,10.2.3.25,tcp,9003

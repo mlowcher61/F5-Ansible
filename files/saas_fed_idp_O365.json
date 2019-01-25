@@ -1,0 +1,86 @@
+{
+	"tables": [{
+		"name": "apm__active_directory_servers",
+		"columnNames": ["host", "addr"],
+		"rows": [{
+			"row": ["ad.home.com", "20.20.20.223"]
+		}]
+	}, {
+		"name": "saas_apps__saas_attributes"
+	}, {
+		"name": "saas_apps__saas_choice",
+		"columnNames": ["app_selection", "app_sp", "app_name", "sp_initiated"],
+		"rows": [{
+			"row": ["/#o365#", "/#sp_o365#", "Office365", "yes"]
+		}]
+	}],
+	"variables": [{
+		"name": "apm__aaa_profile",
+		"encrypted": "no",
+		"value": "/#create_new#"
+	}, {
+		"name": "apm__ad_monitor",
+		"encrypted": "no",
+		"value": "/#use_icmp#"
+	}, {
+		"name": "apm__credentials",
+		"encrypted": "no",
+		"value": "no"
+	}, {
+		"name": "apm__logging",
+		"encrypted": "no",
+		"value": "/Common/default-log-setting"
+	}, {
+		"name": "apm__login_domain",
+		"encrypted": "no",
+		"value": "ad2.home.com"
+	}, {
+		"name": "apm__saml_entity_id",
+		"encrypted": "no",
+		"value": "https://www.office365.com"
+	}, {
+		"name": "apm__saml_entity_id_format",
+		"encrypted": "no",
+		"value": "url"
+	}, {
+		"name": "idp_encryption__cert",
+		"encrypted": "no",
+		"value": "/Common/kenyon2"
+	}, {
+		"name": "idp_encryption__key",
+		"encrypted": "no",
+		"value": "/Common/kenyon2"
+	}, {
+		"name": "options__advanced_mode",
+		"encrypted": "no",
+		"value": "no"
+	}, {
+		"name": "options__display_help",
+		"encrypted": "no",
+		"value": "show"
+	}, {
+		"name": "saas_apps__aws_selected",
+		"encrypted": "no",
+		"value": "no"
+	}, {
+		"name": "saas_apps__saas_attributes_required",
+		"encrypted": "no",
+		"value": "no"
+	}, {
+		"name": "saas_virtual__addr",
+		"encrypted": "no",
+		"value": "20.20.20.233"
+	}, {
+		"name": "saas_virtual__cert",
+		"encrypted": "no",
+		"value": "/Common/kenyon2"
+	}, {
+		"name": "saas_virtual__key",
+		"encrypted": "no",
+		"value": "/Common/kenyon2"
+	}, {
+		"name": "saas_virtual__port",
+		"encrypted": "no",
+		"value": "443"
+	}]
+}
