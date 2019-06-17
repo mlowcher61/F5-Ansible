@@ -6,7 +6,8 @@
         bigip_config:
           reset: yes
           save: yes
-          server: "{{ inventory_hostname }}"
+          #          server: "{{ inventory_hostname }}"
+          server: 52.35.125.165
           password: admin
           user: admin
           validate_certs: no

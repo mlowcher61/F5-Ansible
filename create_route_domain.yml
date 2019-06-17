@@ -9,14 +9,14 @@
 #      exist prior to running this playbook.
 
 - name: Connecting...
-  hosts: "10.0.0.157"
+  hosts: "192.168.0.19"
   connection: local
   gather_facts: no
   vars:
     setup_user: "admin"
     setup_pass: "admin"
-    bigip: "10.0.0.157"
-    route_id: "1234"
+    bigip: "192.168.0.19"
+    route_id: "1"
 
   tasks:
     - name: Create a route domain
@@ -26,16 +26,17 @@
           password: "{{setup_pass}}"
           server: "{{bigip}}"
           state: "present"
+          validate_certs: False
       delegate_to: localhost
 
-    - name: Set VLANs on the route domain
-      bigip_routedomain:
-          id: "{{route_id}}"
-          user: "{{setup_user}}"
-          password: "{{setup_pass}}"
-          server: "{{bigip}}"
-          state: "present"
-          vlans:
-              - f5_ext
-              - f5_int3
-      delegate_to: localhost
+#    - name: Set VLANs on the route domain
+#      bigip_routedomain:
+#          id: "{{route_id}}"
+#          user: "{{setup_user}}"
+#          password: "{{setup_pass}}"
+#          server: "{{bigip}}"
+#          state: "present"
+#          vlans:
+#              - f5_ext
+#              - f5_int3
+#      delegate_to: localhost

@@ -13,8 +13,8 @@
   gather_facts: false
 
   vars:
-   bigip1: 10.1.0.20
-   bigip2: 10.1.0.21
+   bigip1: 52.25.217.73
+   bigip2: 52.35.125.165
    hostname1: bigip-f.agility.f5demo.net 
    hostname2: bigip-s.agility.f5demo.net  
    external_vlan: external_vlan
@@ -41,7 +41,7 @@
    name_server_1: 64.65.64.65
    name_server_2: 8.8.8.8
    setup_user: admin
-   setup_pass: admin
+   setup_pass: Kenkar@00
    state: present
 # Change the state above to "absent" to remove object(s)
 
@@ -67,7 +67,7 @@
 
   - name: Disabling the setup utility on both devices
     bigip_sys_global:
-     gui_setup: "disabled"
+     gui_setup: "no"
      server: "{{ item.server }}"
      user: "{{ setup_user }}"
      password: "{{ setup_pass }}"
@@ -276,7 +276,7 @@
   - name: Set the banner for the SSHD service from a file
     bigip_device_sshd:
      banner: enabled
-     banner_text: "{{ lookup('file', '/var/tmp/SSHD-banner.txt') }}"
+     banner_text: "{{ lookup('file', '/mnt/c/Users/lowcher/AnsibleFiles/SSHD-banner.txt') }}"
      server: "{{ item.server }}"
      user: "{{ setup_user }}"
      pass: "{{ setup_pass }}"

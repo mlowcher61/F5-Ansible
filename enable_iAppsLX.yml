@@ -1,5 +1,5 @@
 ---
-- hosts: bigip
+- hosts: bigip[0]
   tasks:
     - name: create the enable file if it doesn't exist
       file:
