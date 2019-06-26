@@ -1,0 +1,31 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will run an arbitrary
+#      tmsh command from bash. In this example it will 
+#      run "tmsh show sys version" and "tmsh list ltm virtual
+#      Notice you don't need the "tmsh" as part of the
+#      command in this playbook.
+#
+#      ~~~~~~~~~~~~~~~NOTICE~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#      This playbook will not work until Ansible 2.4
+#      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- name: Accessing Bigip
+  hosts: 52.25.217.73
+  connection: local
+
+  tasks:
+   - name: creating a vlan
+     bigip_vlan:
+         name: "net1"
+         password: "Kenkar@00"
+         server: "52.25.217.73"
+         user: "admin"
+         state: "absent"
+         validate_certs: "no"
+     delegate_to: localhost      

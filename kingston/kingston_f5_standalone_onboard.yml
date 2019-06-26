@@ -1,4 +1,3 @@
-#!/usr/bin/ansible-playbook
 ---
       
 #      Copyright (c) 2016 F5 Networks
@@ -18,14 +17,33 @@
   gather_facts: no
   vars:
     setup_user: "admin"
-    setup_pass: "Kenkar@00"
     setup_pass: "admin"
     
   tasks:
   - name: Get facts from CSV file
     csv_to_facts:
-      src: ./files/f5_standalone.csv
+      src: ./files/kingston_f5_standalone.csv
 
+  - name: Change Local Device Name 
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/cm/device"
+      body: '{"command":"mv","name":"bigip1","target":"{{item.hostname}}"}'
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    
+  - name: Change Hostname for Device 
+    icontrol_install_config: 
+      uri: "/mgmt/tm/sys/globalSettings"
+      method: PATCH
+      body: '{"hostname":"{{item.hostname}}","guiSetup":"disabled"}'     
+      host: "{{item.appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"
+    with_items: "{{spreadsheet}}"
+    
   - name: Create VLAN Internal
     icontrol_install_config: 
       uri: "/mgmt/tm/net/vlan"

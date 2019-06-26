@@ -1,0 +1,28 @@
+---
+- name: Create a partition
+  hosts: localhost
+  gather_facts: false
+  vars:
+   name: spacex       
+   description: spacex partition
+   username: admin
+   password: admin
+   server: 192.168.0.19 
+   state: present
+   route_domain: 1
+
+
+  tasks:
+
+  - name: Creating partition "{{ name }}"
+    bigip_partition:
+      name: "{{ name }}"
+      description: "{{ description }}"   
+      route_domain: "{{ route_domain }}"
+      state: "{{ state }}"  
+      provider:
+        server: "{{server }}"
+        user: "{{ username }}"
+        password: "{{ password }}"
+        validate_certs: False
+    delegate_to: localhost

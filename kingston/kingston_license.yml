@@ -12,10 +12,9 @@
 #      10.0.0.101
 #
 
-  - hosts: bigip[3]
+  - hosts: bigip[1]
     tasks:
       - name: License Big-IP
-        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey MRSQU-IVVOV-YDVFY-EELJT-SIEOHED
+        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey CZYFB-SRHDN-FZXJP-PGGXW-SGNCVHW
 
 # Back up licenses
-#ENWVC-IHEIQ-KKZLL-PHVKV-VYFCHMM

@@ -1,0 +1,37 @@
+---
+- name: Starting Layer 3 configuration
+  hosts: bigip[0]
+  gather_facts: false
+  vars_files:
+    - kingston_network_config_vars.yml
+
+  tasks:
+
+
+  - name: Configure VLANs on the BIG-IP
+    bigip_vlan:
+     server: "{{ inventory_hostname }}"
+     user: "{{ username }}"
+     password: "{{ password }}"
+     validate_certs: False
+     name: "{{ item.name }}"
+     tag: "{{ item.tag }}"
+     tagged_interface: "{{ item.interface }}"
+    with_items: "{{ vlan_information }}"
+    delegate_to: localhost
+
+
+  - name: Configure SELF-IPs on the BIG-IP
+    bigip_selfip:
+     server: "{{ inventory_hostname }}"
+     user: "{{ username }}"
+     password: "{{ password }}"
+     validate_certs: False
+     name: "{{ item.name }}"
+     address: "{{ item.address }}"
+     netmask: "{{ item.netmask }}"
+     route_domain: "{{item.id}}"
+     vlan: "{{ item.vlan }}"
+     traffic_group: "{{ item.traffic_group }}"
+    with_items: "{{ selfip_information }}"
+    delegate_to: localhost

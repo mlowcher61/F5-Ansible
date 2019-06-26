@@ -1,0 +1,180 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks
+#      All rights reserved.
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create an HA configuration
+#      on two newly licensed devices.
+#
+
+- name: Set up a BIG-IP HA pair
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+   bigip1: 10.0.0.180
+   bigip1_old_name: bigip1
+   bigip1_new_name: bigip1.home.com
+   external_vlan: external_vlan
+   internal_vlan: internal_vlan
+   external_self_name: external_self
+   internal_self_name: internal_self
+   external_self_1: 20.20.20.20
+   external_tag: 20
+   internal_self_1: 10.10.10.10
+   internal_tag: 10 
+   ext_netmask: 255.255.255.0
+   int_netmask: 255.255.255.0
+   name_server_1: 64.65.64.65
+   name_server_2: 8.8.8.8
+   setup_user: admin
+   setup_pass: admin
+   state: present
+# Change the state above to "absent" to remove object(s)
+
+  tasks:
+  
+  - name: Change device name of BIGIP1
+    bigip_command:
+     server: "{{ bigip1 }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     commands:
+     - mv cm device "{{ bigip1_old_name }}" "{{ bigip1_new_name }}"
+    delegate_to: localhost
+
+  - name: Disabling the setup utility 
+    bigip_sys_global:
+     gui_setup: "disabled"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+
+  - name: Creating external vlan
+    bigip_vlan:
+     name: "{{ external_vlan }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     tag: "{{ external_tag }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+
+  - name: Creating internal vlan
+    bigip_vlan:
+     name: "{{ internal_vlan }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     tag: "{{ internal_tag }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+
+  - name: Adding external vlan as untagged to interface 1.1 
+    bigip_vlan:
+     untagged_interfaces: 1.1
+     name: "{{ external_vlan }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+    
+  - name: Adding internal vlan as untagged to interface 1.2 
+    bigip_vlan:
+     untagged_interfaces: 1.2
+     name: "{{ internal_vlan }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     password: "{{ setup_pass }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+
+  - name: Creating external self ip 
+    bigip_selfip:
+        name: "{{ external_self_name }}"
+        server: "{{ item.server }}"
+        user: "{{ setup_user }}"
+        pass: "{{ setup_pass }}"
+        address: "{{ item.address }}"
+        vlan: "{{ external_vlan }}"
+        traffic_group: "traffic-group-local-only"
+        netmask: "{{ ext_netmask }}"
+        validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - address: "{{ external_self_1 }}"
+
+  - name: Creating internal self ip 
+    bigip_selfip:
+     name: "{{ internal_self_name }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     pass: "{{ setup_pass }}"
+     address: "{{ item.address }}"
+     vlan: "{{ internal_vlan }}"
+     traffic_group: "traffic-group-local-only"
+     netmask: "{{ int_netmask }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+           - address: "{{ internal_self_1 }}"
+
+  - name: Configuring DNS servers
+    bigip_device_dns:
+     name_servers:
+         - "{{ name_server_1 }}"
+         - "{{ name_server_2 }}"
+     search:
+         - localdomain
+         - lab.local
+     state: present
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     pass: "{{ setup_pass }}"
+     validate_certs: no
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+
+  - name: Configuring NTP servers
+    bigip_device_ntp:
+     ntp_servers:
+        - "192.0.2.23"
+     timezone: "America/Chicago"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     pass: "{{ setup_pass }}"
+     state: present
+     validate_certs: "no"
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"
+
+  - name: Set the banner for the SSHD service from a file
+    bigip_device_sshd:
+     banner: "enabled"
+     banner_text: "{{ lookup('file', '/var/tmp/SSHD-banner.txt') }}"
+     server: "{{ item.server }}"
+     user: "{{ setup_user }}"
+     pass: "{{ setup_pass }}"
+     state: present
+    delegate_to: localhost
+    with_items:
+           - server: "{{ bigip1 }}"

@@ -1,0 +1,33 @@
+---
+- name: vxlan
+  hosts: localhost
+  gather_facts: false
+  vars:
+   name: flannel-tunnel       
+   user: admin
+   password: admin
+   server: 192.168.0.19
+   local_address: 192.168.1.240
+   secondary_address: 192.168.1.100 
+   state: present
+
+
+  tasks:
+
+  - name: Create a VXLAN tunnel
+    bigip_tunnel:
+      name: "{{ name }}"
+      local_address: "{{ local_address }}"
+      key: 0
+      secondary_address: "{{ secondary_address }}"
+      mtu: 0
+      use_pmtu: yes
+      tos: preserve
+      auto_last_hop: default
+      traffic_group: traffic-group-1
+      state: "{{ state }}"
+      provider:
+        password: "{{ password }}"
+        server: "{{ server }}"
+        user: "{{ user }}"
+    delegate_to: localhost    

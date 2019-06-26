@@ -10,16 +10,16 @@
 #      Requires Ansible 2.4 or higher
 
 - name: Reset the BIG-IP configuration, for example, to RMA the device
-  hosts: bigip
+  hosts: bigip[2]
   connection: local
 
   tasks:
    - name: resetting now
      bigip_config:
          reset: "yes"
-         save: "yes"
+         save: "no"
          server: "bigip"
          password: "admin"
-         user: "admin"
+         user: "Kenkar@00"
          validate_certs: "no"
      delegate_to: localhost

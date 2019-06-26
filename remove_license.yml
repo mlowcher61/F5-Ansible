@@ -1,5 +1,5 @@
 ---
-  - hosts: loadbalancer
+  - hosts: bigip[1]
     tasks:
       - name: Remove License 
         raw: mv /config/bigip.license /config/bigip.license.old

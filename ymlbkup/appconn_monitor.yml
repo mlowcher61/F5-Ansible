@@ -1,0 +1,30 @@
+#!/usr/bin/ansible-playbook
+---
+#
+#      Copyright (c) 2016 F5 Networks 
+#      All rights reserved. 
+#
+#      author: Mark Lowcher F5 Networks
+#      description: This playbook will create an external HTTP monitor 
+#      to be used with Application Connector Service Center.
+#
+
+- name: F5 Setup
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    setup_user: "admin"
+    setup_pass: "admin"
+    appliance: "10.0.0.185"
+    
+  tasks:
+
+  - name: Creating an external http monitor for App Connector
+    icontrol_install_config: 
+      method: "_post_"
+      uri: "/mgmt/tm/ltm/monitor/external"
+      body: '{"name":"external_http_monitor","send":"GET / HTTP/1.0\r\n\r\n","recv":"OK","description":"external monitor for checking cloud nodes","run":"/Common/ac_http_mon","args": "/index.php OK"}'
+      host: "{{appliance}}"
+      username: "{{setup_user}}"
+      password: "{{setup_pass}}"

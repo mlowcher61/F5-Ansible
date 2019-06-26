@@ -12,10 +12,7 @@
 #      10.0.0.101
 #
 
-  - hosts: bigip[3]
+  - hosts: bigip[1]
     tasks:
-      - name: License Big-IP
-        raw: /usr/local/bin/SOAPLicenseClient --interactive  --basekey MRSQU-IVVOV-YDVFY-EELJT-SIEOHED
-
-# Back up licenses
-#ENWVC-IHEIQ-KKZLL-PHVKV-VYFCHMM
+      - name: Set interface into span port mode
+        raw: tmsh create net port-mirror 1.2
