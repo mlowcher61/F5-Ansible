@@ -14,7 +14,7 @@
 #      The F5 devices must have internet access for the upload to dropbox 
 #      to work.
 
-   - hosts: loadbalancer[0]
+   - hosts: bigip[3]
      vars:
        case_number: "C123456"
        password: "m.lowcher@f5.com"
